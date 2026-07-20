@@ -1,4 +1,7 @@
+"use client";
+
 type CheckInFormProps = {
+  salonId: string;
   onCheckIn: () => void;
 };
 
@@ -6,7 +9,6 @@ export default function CheckInForm({ onCheckIn }: CheckInFormProps) {
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
-
         <p className="text-sm font-medium text-primary">
           Walkinly
         </p>
@@ -31,7 +33,6 @@ export default function CheckInForm({ onCheckIn }: CheckInFormProps) {
         >
           Einchecken
         </button>
-
       </div>
     </main>
   );

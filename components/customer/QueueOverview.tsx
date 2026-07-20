@@ -1,23 +1,12 @@
-"use client";
+type QueueOverviewProps = {
+  salonName: string;
+  onStartCheckIn: () => void;
+};
 
-import { useState } from "react";
-import CheckInForm from "./CheckInForm";
-import QueueStatus from "./QueueStatus";
-
-export default function QueueOverview() {
-  const [step, setStep] = useState("overview");
-
-  if (step === "checkin") {
-    return (
-      <CheckInForm
-        onCheckIn={() => setStep("success")}
-      />
-    );
-  }
-
-  if (step === "success") {
-    return <QueueStatus />;
-  }
+export default function QueueOverview({
+  salonName,
+  onStartCheckIn,
+}: QueueOverviewProps) {
 
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
@@ -28,7 +17,7 @@ export default function QueueOverview() {
         </p>
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
-          Willkommen
+          Willkommen bei {salonName}
         </h1>
 
         <p className="mt-3 text-zinc-500">
@@ -48,7 +37,7 @@ export default function QueueOverview() {
         </p>
 
         <button
-          onClick={() => setStep("checkin")}
+          onClick={onStartCheckIn}
           className="mt-8 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-white hover:opacity-90 transition"
         >
           Jetzt einchecken
