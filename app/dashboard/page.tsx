@@ -8,7 +8,13 @@ import { supabase } from "@/lib/supabase";
 type DashboardState =
   | { status: "loading" }
   | { status: "no-access"; email: string }
-  | { status: "ready"; email: string; salonId: string; salonName: string };
+  | {
+      status: "ready";
+      email: string;
+      salonId: string;
+      salonName: string;
+      isChairOccupied: boolean;
+    };
 
 type QueueEntry = {
   entry_id: string;
@@ -26,6 +32,7 @@ export default function DashboardPage() {
   const [queueError, setQueueError] = useState<string | null>(null);
   const [isQueueLoading, setIsQueueLoading] = useState(false);
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
+  const [isUpdatingChair, setIsUpdatingChair] = useState(false);
 
   const loadQueue = useCallback(async (salonId: string, isBackgroundUpdate = false) => {
     if (!isBackgroundUpdate) {
@@ -74,7 +81,7 @@ export default function DashboardPage() {
 
       const { data: salon } = await supabase
         .from("salons")
-        .select("name")
+        .select("name, current_service_started_at")
         .eq("id", membership.salon_id)
         .maybeSingle();
 
@@ -83,6 +90,7 @@ export default function DashboardPage() {
         email,
         salonId: membership.salon_id,
         salonName: salon?.name ?? "Dein Salon",
+        isChairOccupied: salon?.current_service_started_at !== null,
       });
 
       await loadQueue(membership.salon_id);
@@ -122,7 +130,39 @@ export default function DashboardPage() {
       return;
     }
 
+    setDashboardState((current) =>
+      current.status === "ready"
+        ? { ...current, isChairOccupied: true }
+        : current,
+    );
     await loadQueue(dashboardState.salonId);
+  }
+
+  async function handleChairToggle() {
+    if (dashboardState.status !== "ready") {
+      return;
+    }
+
+    setIsUpdatingChair(true);
+    setQueueError(null);
+
+    const { error } = await supabase.rpc("set_salon_busy", {
+      p_salon_id: dashboardState.salonId,
+      p_is_busy: !dashboardState.isChairOccupied,
+    });
+
+    setIsUpdatingChair(false);
+
+    if (error) {
+      setQueueError("Der Stuhlstatus konnte nicht geändert werden.");
+      return;
+    }
+
+    setDashboardState((current) =>
+      current.status === "ready"
+        ? { ...current, isChairOccupied: !current.isChairOccupied }
+        : current,
+    );
   }
 
   async function handleSignOut() {
@@ -156,6 +196,27 @@ export default function DashboardPage() {
             <p className="mt-3 text-zinc-500">
               Du bist als {dashboardState.email} angemeldet.
             </p>
+
+            <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
+              <p className="text-sm font-medium">
+                {dashboardState.isChairOccupied ? "Stuhl besetzt" : "Stuhl frei"}
+              </p>
+              <p className="mt-1 text-sm text-zinc-500">
+                Nutze dies für Kunden, die direkt auf dem Stuhl Platz nehmen.
+              </p>
+              <button
+                type="button"
+                onClick={handleChairToggle}
+                disabled={isUpdatingChair || servingEntryId !== null}
+                className="mt-4 w-full rounded-xl border border-zinc-200 bg-white py-3 text-sm font-semibold text-foreground hover:bg-zinc-100 transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isUpdatingChair
+                  ? "Status wird gespeichert..."
+                  : dashboardState.isChairOccupied
+                    ? "Stuhl freigeben"
+                    : "Stuhl besetzen"}
+              </button>
+            </div>
 
             <div className="mt-8 border-t border-zinc-100 pt-6">
               <div className="flex items-center justify-between">
