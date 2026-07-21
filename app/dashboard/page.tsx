@@ -102,9 +102,7 @@ export default function DashboardPage() {
     setServingEntryId(null);
 
     if (error) {
-      setQueueError(
-        `Der Kunde konnte nicht als bedient markiert werden: ${error.message}`,
-      );
+      setQueueError("Der Kunde konnte nicht als bedient markiert werden.");
       return;
     }
 
