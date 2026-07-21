@@ -1,10 +1,14 @@
 type QueueOverviewProps = {
   salonName: string;
+  waitingCount: number;
+  estimatedWaitMinutes: number;
   onStartCheckIn: () => void;
 };
 
 export default function QueueOverview({
   salonName,
+  waitingCount,
+  estimatedWaitMinutes,
   onStartCheckIn,
 }: QueueOverviewProps) {
 
@@ -25,7 +29,7 @@ export default function QueueOverview({
         </p>
 
         <p className="mt-2 text-5xl font-bold text-foreground">
-          4
+          {waitingCount}
         </p>
 
         <p className="mt-4 text-zinc-500">
@@ -33,7 +37,7 @@ export default function QueueOverview({
         </p>
 
         <p className="mt-2 text-2xl font-semibold text-foreground">
-          ca. 25 Minuten
+          ca. {estimatedWaitMinutes} Minuten
         </p>
 
         <button

@@ -1,4 +1,12 @@
-export default function QueueStatus() {
+type QueueStatusProps = {
+  queuePosition: number;
+  estimatedWaitMinutes: number;
+};
+
+export default function QueueStatus({
+  queuePosition,
+  estimatedWaitMinutes,
+}: QueueStatusProps) {
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
@@ -16,7 +24,7 @@ export default function QueueStatus() {
         </p>
 
         <p className="mt-2 text-5xl font-bold">
-          #4
+          #{queuePosition}
         </p>
 
         <p className="mt-6 text-zinc-500">
@@ -24,7 +32,7 @@ export default function QueueStatus() {
         </p>
 
         <p className="mt-2 text-2xl font-semibold">
-          ca. 25 Minuten
+          ca. {estimatedWaitMinutes} Minuten
         </p>
 
       </div>

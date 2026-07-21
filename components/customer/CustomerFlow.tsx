@@ -3,26 +3,38 @@
 import { useState } from "react";
 
 import QueueOverview from "./QueueOverview";
-import CheckInForm from "./CheckInForm";
+import CheckInForm, { type CheckInResult } from "./CheckInForm";
 import QueueStatus from "./QueueStatus";
 
 type CustomerFlowProps = {
-  salonId: string;
   salonName: string;
+  salonSlug: string;
+  initialWaitingCount: number;
+  initialEstimatedWaitMinutes: number;
 };
 
 export default function CustomerFlow({
-  salonId,
   salonName,
+  salonSlug,
+  initialWaitingCount,
+  initialEstimatedWaitMinutes,
 }: CustomerFlowProps) {
   const [step, setStep] = useState<
     "overview" | "checkin" | "success"
   >("overview");
+  const [checkInResult, setCheckInResult] = useState<CheckInResult | null>(null);
+
+  function handleCheckIn(result: CheckInResult) {
+    setCheckInResult(result);
+    setStep("success");
+  }
 
   if (step === "overview") {
     return (
       <QueueOverview
         salonName={salonName}
+        waitingCount={initialWaitingCount}
+        estimatedWaitMinutes={initialEstimatedWaitMinutes}
         onStartCheckIn={() => setStep("checkin")}
       />
     );
@@ -31,11 +43,16 @@ export default function CustomerFlow({
   if (step === "checkin") {
     return (
       <CheckInForm
-        salonId={salonId}
-        onCheckIn={() => setStep("success")}
+        salonSlug={salonSlug}
+        onCheckIn={handleCheckIn}
       />
     );
   }
 
-  return <QueueStatus />;
+  return (
+    <QueueStatus
+      queuePosition={checkInResult?.queuePosition ?? 1}
+      estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
+    />
+  );
 }
