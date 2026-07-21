@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
@@ -8,13 +8,42 @@ import { supabase } from "@/lib/supabase";
 type DashboardState =
   | { status: "loading" }
   | { status: "no-access"; email: string }
-  | { status: "ready"; email: string; salonName: string };
+  | { status: "ready"; email: string; salonId: string; salonName: string };
+
+type QueueEntry = {
+  entry_id: string;
+  customer_name: string;
+  queue_position: number;
+  checked_in_at: string;
+};
 
 export default function DashboardPage() {
   const router = useRouter();
   const [dashboardState, setDashboardState] = useState<DashboardState>({
     status: "loading",
   });
+  const [queueEntries, setQueueEntries] = useState<QueueEntry[]>([]);
+  const [queueError, setQueueError] = useState<string | null>(null);
+  const [isQueueLoading, setIsQueueLoading] = useState(false);
+  const [servingEntryId, setServingEntryId] = useState<string | null>(null);
+
+  const loadQueue = useCallback(async (salonId: string) => {
+    setIsQueueLoading(true);
+    setQueueError(null);
+
+    const { data, error } = await supabase
+      .rpc("get_staff_queue", { p_salon_id: salonId })
+      .returns<QueueEntry[]>();
+
+    setIsQueueLoading(false);
+
+    if (error || !Array.isArray(data)) {
+      setQueueError("Die Warteschlange konnte nicht geladen werden.");
+      return;
+    }
+
+    setQueueEntries(data as QueueEntry[]);
+  }, []);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -48,12 +77,37 @@ export default function DashboardPage() {
       setDashboardState({
         status: "ready",
         email,
+        salonId: membership.salon_id,
         salonName: salon?.name ?? "Dein Salon",
       });
+
+      await loadQueue(membership.salon_id);
     }
 
     loadDashboard();
-  }, [router]);
+  }, [loadQueue, router]);
+
+  async function handleServe(entryId: string) {
+    if (dashboardState.status !== "ready") {
+      return;
+    }
+
+    setServingEntryId(entryId);
+    setQueueError(null);
+
+    const { error } = await supabase.rpc("serve_queue_entry", {
+      p_entry_id: entryId,
+    });
+
+    setServingEntryId(null);
+
+    if (error) {
+      setQueueError("Der Kunde konnte nicht als bedient markiert werden.");
+      return;
+    }
+
+    await loadQueue(dashboardState.salonId);
+  }
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -86,9 +140,59 @@ export default function DashboardPage() {
             <p className="mt-3 text-zinc-500">
               Du bist als {dashboardState.email} angemeldet.
             </p>
-            <p className="mt-6 text-zinc-500">
-              Die Queue-Verwaltung wird als nächster Schritt hier angezeigt.
-            </p>
+
+            <div className="mt-8 border-t border-zinc-100 pt-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Warteschlange</h2>
+                <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium">
+                  {queueEntries.length} wartend
+                </span>
+              </div>
+
+              {queueError && (
+                <p className="mt-3 text-sm text-red-600" role="alert">
+                  {queueError}
+                </p>
+              )}
+
+              {isQueueLoading ? (
+                <p className="mt-4 text-sm text-zinc-500">
+                  Warteschlange wird geladen...
+                </p>
+              ) : queueEntries.length === 0 ? (
+                <p className="mt-4 text-sm text-zinc-500">
+                  Momentan wartet niemand.
+                </p>
+              ) : (
+                <ul className="mt-4 space-y-3">
+                  {queueEntries.map((entry) => (
+                    <li
+                      key={entry.entry_id}
+                      className="flex items-center justify-between gap-4 rounded-2xl bg-zinc-50 p-4"
+                    >
+                      <div>
+                        <p className="font-semibold">
+                          #{entry.queue_position} · {entry.customer_name}
+                        </p>
+                        <p className="mt-1 text-sm text-zinc-500">
+                          Wartet in der Schlange
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleServe(entry.entry_id)}
+                        disabled={servingEntryId !== null}
+                        className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {servingEntryId === entry.entry_id
+                          ? "Wird bedient..."
+                          : "Bedienen"}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </>
         )}
 
