@@ -27,15 +27,19 @@ export default function DashboardPage() {
   const [isQueueLoading, setIsQueueLoading] = useState(false);
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
 
-  const loadQueue = useCallback(async (salonId: string) => {
-    setIsQueueLoading(true);
+  const loadQueue = useCallback(async (salonId: string, isBackgroundUpdate = false) => {
+    if (!isBackgroundUpdate) {
+      setIsQueueLoading(true);
+    }
     setQueueError(null);
 
     const { data, error } = await supabase
       .rpc("get_staff_queue", { p_salon_id: salonId })
       .returns<QueueEntry[]>();
 
-    setIsQueueLoading(false);
+    if (!isBackgroundUpdate) {
+      setIsQueueLoading(false);
+    }
 
     if (error || !Array.isArray(data)) {
       setQueueError("Die Warteschlange konnte nicht geladen werden.");
@@ -86,6 +90,18 @@ export default function DashboardPage() {
 
     loadDashboard();
   }, [loadQueue, router]);
+
+  useEffect(() => {
+    if (dashboardState.status !== "ready") {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      void loadQueue(dashboardState.salonId, true);
+    }, 10_000);
+
+    return () => window.clearInterval(intervalId);
+  }, [dashboardState, loadQueue]);
 
   async function handleServe(entryId: string) {
     if (dashboardState.status !== "ready") {
