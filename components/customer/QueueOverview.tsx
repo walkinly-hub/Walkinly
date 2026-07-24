@@ -25,7 +25,7 @@ export default function QueueOverview({
         <SalonBrand salonName={salonName} logoUrl={logoUrl} logoInverted={logoInverted} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
-          Willkommen bei {salonName}
+          Herzlich willkommen
         </h1>
 
         <p className="mt-3 text-[var(--muted-foreground)]">

@@ -58,6 +58,31 @@ export default function CustomerFlow({
     return () => window.clearInterval(intervalId);
   }, [refreshQueueSummary]);
 
+  useEffect(() => {
+    window.history.replaceState(
+      { ...window.history.state, walkinlyStep: "overview" },
+      "",
+      window.location.href,
+    );
+
+    function handleHistoryNavigation(event: PopStateEvent) {
+      setStep(event.state?.walkinlyStep === "checkin" ? "checkin" : "overview");
+    }
+
+    window.addEventListener("popstate", handleHistoryNavigation);
+
+    return () => window.removeEventListener("popstate", handleHistoryNavigation);
+  }, []);
+
+  function startCheckIn() {
+    window.history.pushState(
+      { ...window.history.state, walkinlyStep: "checkin" },
+      "",
+      window.location.href,
+    );
+    setStep("checkin");
+  }
+
   function handleCheckIn(result: CheckInResult) {
     setCheckInResult(result);
     setStep("success");
@@ -83,7 +108,7 @@ export default function CustomerFlow({
           logoInverted={branding.logoInverted}
           waitingCount={waitingCount}
           estimatedWaitMinutes={estimatedWaitMinutes}
-          onStartCheckIn={() => setStep("checkin")}
+          onStartCheckIn={startCheckIn}
         />
       </div>
     );
