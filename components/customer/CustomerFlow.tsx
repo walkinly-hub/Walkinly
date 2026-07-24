@@ -134,9 +134,18 @@ export default function CustomerFlow({
       void refreshQueueSummary();
     }, 10_000);
 
+    function refreshWhenVisible() {
+      if (document.visibilityState === "visible") {
+        void refreshQueueSummary();
+      }
+    }
+
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
     return () => {
       window.clearTimeout(initialRefreshId);
       window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [refreshQueueSummary]);
 
@@ -152,9 +161,18 @@ export default function CustomerFlow({
       void refreshCustomerQueueEntry();
     }, 5_000);
 
+    function refreshWhenVisible() {
+      if (document.visibilityState === "visible") {
+        void refreshCustomerQueueEntry();
+      }
+    }
+
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
     return () => {
       window.clearTimeout(initialRefreshId);
       window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [queueEntryCredentials, refreshCustomerQueueEntry]);
 

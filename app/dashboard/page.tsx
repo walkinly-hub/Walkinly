@@ -104,11 +104,23 @@ export default function DashboardPage() {
       return;
     }
 
+    const salonId = dashboardState.salonId;
     const intervalId = window.setInterval(() => {
-      void loadQueue(dashboardState.salonId, true);
-    }, 10_000);
+      void loadQueue(salonId, true);
+    }, 5_000);
 
-    return () => window.clearInterval(intervalId);
+    function refreshWhenVisible() {
+      if (document.visibilityState === "visible") {
+        void loadQueue(salonId, true);
+      }
+    }
+
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
   }, [dashboardState, loadQueue]);
 
   async function handleServe(entryId: string) {
