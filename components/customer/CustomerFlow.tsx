@@ -69,6 +69,7 @@ export default function CustomerFlow({
     "--card": branding.surfaceColor,
     "--primary": branding.primaryColor,
     "--primary-hover": branding.primaryHoverColor,
+    "--primary-foreground": branding.primaryForegroundColor,
     "--border": branding.borderColor,
     "--muted-foreground": branding.mutedForegroundColor,
   } as CSSProperties & Record<`--${string}`, string>;
@@ -79,6 +80,7 @@ export default function CustomerFlow({
         <QueueOverview
           salonName={salonName}
           logoUrl={branding.logoUrl}
+          logoInverted={branding.logoInverted}
           waitingCount={waitingCount}
           estimatedWaitMinutes={estimatedWaitMinutes}
           onStartCheckIn={() => setStep("checkin")}
@@ -93,6 +95,7 @@ export default function CustomerFlow({
         <CheckInForm
           salonName={salonName}
           logoUrl={branding.logoUrl}
+          logoInverted={branding.logoInverted}
           salonSlug={salonSlug}
           onCheckIn={handleCheckIn}
         />
@@ -105,6 +108,7 @@ export default function CustomerFlow({
       <QueueStatus
         salonName={salonName}
         logoUrl={branding.logoUrl}
+        logoInverted={branding.logoInverted}
         queuePosition={checkInResult?.queuePosition ?? 1}
         estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
       />

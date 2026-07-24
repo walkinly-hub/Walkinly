@@ -3,6 +3,7 @@ import SalonBrand from "./SalonBrand";
 type QueueOverviewProps = {
   salonName: string;
   logoUrl?: string;
+  logoInverted: boolean;
   waitingCount: number;
   estimatedWaitMinutes: number;
   onStartCheckIn: () => void;
@@ -11,6 +12,7 @@ type QueueOverviewProps = {
 export default function QueueOverview({
   salonName,
   logoUrl,
+  logoInverted,
   waitingCount,
   estimatedWaitMinutes,
   onStartCheckIn,
@@ -20,7 +22,7 @@ export default function QueueOverview({
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
 
-        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} logoInverted={logoInverted} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Willkommen bei {salonName}
@@ -44,7 +46,7 @@ export default function QueueOverview({
 
         <button
           onClick={onStartCheckIn}
-          className="mt-8 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-white hover:opacity-90 transition"
+          className="mt-8 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-[var(--primary-foreground)] hover:opacity-90 transition"
         >
           Jetzt einchecken
         </button>

@@ -3,6 +3,7 @@ import SalonBrand from "./SalonBrand";
 type QueueStatusProps = {
   salonName: string;
   logoUrl?: string;
+  logoInverted: boolean;
   queuePosition: number;
   estimatedWaitMinutes: number;
 };
@@ -10,6 +11,7 @@ type QueueStatusProps = {
 export default function QueueStatus({
   salonName,
   logoUrl,
+  logoInverted,
   queuePosition,
   estimatedWaitMinutes,
 }: QueueStatusProps) {
@@ -17,7 +19,7 @@ export default function QueueStatus({
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
 
-        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} logoInverted={logoInverted} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Du bist eingecheckt!
@@ -27,7 +29,7 @@ export default function QueueStatus({
           Deine Position
         </p>
 
-        <p className="mt-2 text-5xl font-bold">
+        <p className="mt-2 text-5xl font-bold text-foreground">
           #{queuePosition}
         </p>
 
@@ -35,7 +37,7 @@ export default function QueueStatus({
           Geschätzte Wartezeit
         </p>
 
-        <p className="mt-2 text-2xl font-semibold">
+        <p className="mt-2 text-2xl font-semibold text-foreground">
           ca. {estimatedWaitMinutes} Minuten
         </p>
 

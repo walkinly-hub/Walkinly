@@ -13,6 +13,7 @@ export type CheckInResult = {
 type CheckInFormProps = {
   salonName: string;
   logoUrl?: string;
+  logoInverted: boolean;
   salonSlug: string;
   onCheckIn: (result: CheckInResult) => void;
 };
@@ -20,6 +21,7 @@ type CheckInFormProps = {
 export default function CheckInForm({
   salonName,
   logoUrl,
+  logoInverted,
   salonSlug,
   onCheckIn,
 }: CheckInFormProps) {
@@ -64,7 +66,7 @@ export default function CheckInForm({
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm"
       >
-        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} logoInverted={logoInverted} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Jetzt einchecken
@@ -82,7 +84,7 @@ export default function CheckInForm({
           maxLength={80}
           disabled={isSubmitting}
           required
-          className="mt-6 w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none focus:border-primary"
+          className="mt-6 w-full rounded-2xl border border-border bg-background px-4 py-3 text-foreground outline-none placeholder:text-[var(--muted-foreground)] focus:border-primary"
         />
 
         {errorMessage && (
@@ -94,7 +96,7 @@ export default function CheckInForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-4 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-white hover:opacity-90 transition"
+          className="mt-4 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-[var(--primary-foreground)] hover:opacity-90 transition"
         >
           {isSubmitting ? "Check-in wird gespeichert..." : "Einchecken"}
         </button>
