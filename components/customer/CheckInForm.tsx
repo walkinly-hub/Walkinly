@@ -6,6 +6,8 @@ import { supabase } from "@/lib/supabase";
 import SalonBrand from "./SalonBrand";
 
 export type CheckInResult = {
+  entryId: string;
+  accessToken: string;
   queuePosition: number;
   estimatedWaitMinutes: number;
 };
@@ -42,7 +44,7 @@ export default function CheckInForm({
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    const { data, error } = await supabase.rpc("check_in", {
+    const { data, error } = await supabase.rpc("check_in_customer", {
       p_salon_slug: salonSlug,
       p_customer_name: customerName,
     });
@@ -55,6 +57,8 @@ export default function CheckInForm({
     }
 
     onCheckIn({
+      entryId: data[0].entry_id,
+      accessToken: data[0].access_token,
       queuePosition: data[0].queue_position,
       estimatedWaitMinutes: data[0].estimated_wait_minutes,
     });
