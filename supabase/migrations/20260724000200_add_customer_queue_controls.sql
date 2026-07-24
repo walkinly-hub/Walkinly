@@ -59,7 +59,7 @@ begin
   where salon_id = v_salon.id
     and status = 'waiting';
 
-  insert into public.queue_entries (
+  insert into public.queue_entries as queue_entry (
     salon_id,
     name,
     position,
@@ -71,7 +71,7 @@ begin
     v_position,
     'waiting'
   )
-  returning id, access_token into v_entry_id, v_access_token;
+  returning queue_entry.id, queue_entry.access_token into v_entry_id, v_access_token;
 
   return query
   select
