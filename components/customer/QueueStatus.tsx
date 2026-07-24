@@ -1,9 +1,15 @@
+import SalonBrand from "./SalonBrand";
+
 type QueueStatusProps = {
+  salonName: string;
+  logoUrl?: string;
   queuePosition: number;
   estimatedWaitMinutes: number;
 };
 
 export default function QueueStatus({
+  salonName,
+  logoUrl,
   queuePosition,
   estimatedWaitMinutes,
 }: QueueStatusProps) {
@@ -11,15 +17,13 @@ export default function QueueStatus({
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
 
-        <p className="text-sm font-medium text-primary">
-          Walkinly
-        </p>
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Du bist eingecheckt!
         </h1>
 
-        <p className="mt-6 text-zinc-500">
+        <p className="mt-6 text-[var(--muted-foreground)]">
           Deine Position
         </p>
 
@@ -27,7 +31,7 @@ export default function QueueStatus({
           #{queuePosition}
         </p>
 
-        <p className="mt-6 text-zinc-500">
+        <p className="mt-6 text-[var(--muted-foreground)]">
           Geschätzte Wartezeit
         </p>
 

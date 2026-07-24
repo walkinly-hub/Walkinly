@@ -1,5 +1,8 @@
+import SalonBrand from "./SalonBrand";
+
 type QueueOverviewProps = {
   salonName: string;
+  logoUrl?: string;
   waitingCount: number;
   estimatedWaitMinutes: number;
   onStartCheckIn: () => void;
@@ -7,6 +10,7 @@ type QueueOverviewProps = {
 
 export default function QueueOverview({
   salonName,
+  logoUrl,
   waitingCount,
   estimatedWaitMinutes,
   onStartCheckIn,
@@ -16,15 +20,13 @@ export default function QueueOverview({
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
 
-        <p className="text-sm font-medium text-primary">
-          Walkinly
-        </p>
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Willkommen bei {salonName}
         </h1>
 
-        <p className="mt-3 text-zinc-500">
+        <p className="mt-3 text-[var(--muted-foreground)]">
           Momentan warten
         </p>
 
@@ -32,7 +34,7 @@ export default function QueueOverview({
           {waitingCount}
         </p>
 
-        <p className="mt-4 text-zinc-500">
+        <p className="mt-4 text-[var(--muted-foreground)]">
           Geschätzte Wartezeit
         </p>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { supabase } from "@/lib/supabase";
+import SalonBrand from "./SalonBrand";
 
 export type CheckInResult = {
   queuePosition: number;
@@ -10,11 +11,15 @@ export type CheckInResult = {
 };
 
 type CheckInFormProps = {
+  salonName: string;
+  logoUrl?: string;
   salonSlug: string;
   onCheckIn: (result: CheckInResult) => void;
 };
 
 export default function CheckInForm({
+  salonName,
+  logoUrl,
   salonSlug,
   onCheckIn,
 }: CheckInFormProps) {
@@ -59,15 +64,13 @@ export default function CheckInForm({
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm"
       >
-        <p className="text-sm font-medium text-primary">
-          Walkinly
-        </p>
+        <SalonBrand salonName={salonName} logoUrl={logoUrl} />
 
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Jetzt einchecken
         </h1>
 
-        <p className="mt-3 text-zinc-500">
+        <p className="mt-3 text-[var(--muted-foreground)]">
           Gib deinen Vornamen ein.
         </p>
 
@@ -79,7 +82,7 @@ export default function CheckInForm({
           maxLength={80}
           disabled={isSubmitting}
           required
-          className="mt-6 w-full rounded-2xl border border-zinc-200 px-4 py-3 outline-none focus:border-primary"
+          className="mt-6 w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none focus:border-primary"
         />
 
         {errorMessage && (

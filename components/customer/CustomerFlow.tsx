@@ -1,15 +1,18 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useCallback, useEffect, useState } from "react";
 
 import QueueOverview from "./QueueOverview";
 import CheckInForm, { type CheckInResult } from "./CheckInForm";
 import QueueStatus from "./QueueStatus";
+import type { SalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
 
 type CustomerFlowProps = {
   salonName: string;
   salonSlug: string;
+  branding: SalonBranding;
   initialWaitingCount: number;
   initialEstimatedWaitMinutes: number;
 };
@@ -22,6 +25,7 @@ type QueueSummary = {
 export default function CustomerFlow({
   salonName,
   salonSlug,
+  branding,
   initialWaitingCount,
   initialEstimatedWaitMinutes,
 }: CustomerFlowProps) {
@@ -59,30 +63,51 @@ export default function CustomerFlow({
     setStep("success");
   }
 
+  const themeStyle = {
+    "--background": branding.backgroundColor,
+    "--foreground": branding.foregroundColor,
+    "--card": branding.surfaceColor,
+    "--primary": branding.primaryColor,
+    "--primary-hover": branding.primaryHoverColor,
+    "--border": branding.borderColor,
+    "--muted-foreground": branding.mutedForegroundColor,
+  } as CSSProperties & Record<`--${string}`, string>;
+
   if (step === "overview") {
     return (
-      <QueueOverview
-        salonName={salonName}
-        waitingCount={waitingCount}
-        estimatedWaitMinutes={estimatedWaitMinutes}
-        onStartCheckIn={() => setStep("checkin")}
-      />
+      <div style={themeStyle}>
+        <QueueOverview
+          salonName={salonName}
+          logoUrl={branding.logoUrl}
+          waitingCount={waitingCount}
+          estimatedWaitMinutes={estimatedWaitMinutes}
+          onStartCheckIn={() => setStep("checkin")}
+        />
+      </div>
     );
   }
 
   if (step === "checkin") {
     return (
-      <CheckInForm
-        salonSlug={salonSlug}
-        onCheckIn={handleCheckIn}
-      />
+      <div style={themeStyle}>
+        <CheckInForm
+          salonName={salonName}
+          logoUrl={branding.logoUrl}
+          salonSlug={salonSlug}
+          onCheckIn={handleCheckIn}
+        />
+      </div>
     );
   }
 
   return (
-    <QueueStatus
-      queuePosition={checkInResult?.queuePosition ?? 1}
-      estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
-    />
+    <div style={themeStyle}>
+      <QueueStatus
+        salonName={salonName}
+        logoUrl={branding.logoUrl}
+        queuePosition={checkInResult?.queuePosition ?? 1}
+        estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
+      />
+    </div>
   );
 }
