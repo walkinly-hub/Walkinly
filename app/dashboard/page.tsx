@@ -13,6 +13,7 @@ type DashboardState =
       email: string;
       salonId: string;
       salonName: string;
+      salonSlug: string;
       isChairOccupied: boolean;
     };
 
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [isQueueLoading, setIsQueueLoading] = useState(false);
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
   const [isUpdatingChair, setIsUpdatingChair] = useState(false);
+  const [isEmbedCodeCopied, setIsEmbedCodeCopied] = useState(false);
 
   const loadQueue = useCallback(async (salonId: string, isBackgroundUpdate = false) => {
     if (!isBackgroundUpdate) {
@@ -81,7 +83,7 @@ export default function DashboardPage() {
 
       const { data: salon } = await supabase
         .from("salons")
-        .select("name, current_service_started_at")
+        .select("name, slug, current_service_started_at")
         .eq("id", membership.salon_id)
         .maybeSingle();
 
@@ -90,6 +92,7 @@ export default function DashboardPage() {
         email,
         salonId: membership.salon_id,
         salonName: salon?.name ?? "Dein Salon",
+        salonSlug: salon?.slug ?? membership.salon_id,
         isChairOccupied: salon?.current_service_started_at !== null,
       });
 
@@ -180,6 +183,15 @@ export default function DashboardPage() {
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.replace("/admin");
+  }
+
+  async function copyEmbedCode(salonSlug: string) {
+    const embedUrl = `https://www.walkinly.ch/embed/${salonSlug}`;
+    const embedCode = `<iframe src="${embedUrl}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`;
+
+    await navigator.clipboard.writeText(embedCode);
+    setIsEmbedCodeCopied(true);
+    window.setTimeout(() => setIsEmbedCodeCopied(false), 2_000);
   }
 
   if (dashboardState.status === "loading") {
@@ -281,6 +293,26 @@ export default function DashboardPage() {
                   ))}
                 </ul>
               )}
+            </div>
+
+            <div className="mt-8 border-t border-zinc-100 pt-6">
+              <h2 className="text-lg font-semibold">Website-Integration</h2>
+              <p className="mt-2 text-sm text-zinc-500">
+                Füge diesen Code auf der Website deines Salons ein. Kunden sehen
+                dann die aktuelle Warteschlange und Wartezeit.
+              </p>
+              <textarea
+                readOnly
+                value={`<iframe src="https://www.walkinly.ch/embed/${dashboardState.salonSlug}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`}
+                className="mt-4 h-28 w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 font-mono text-xs text-zinc-700"
+              />
+              <button
+                type="button"
+                onClick={() => void copyEmbedCode(dashboardState.salonSlug)}
+                className="mt-3 w-full rounded-xl border border-zinc-200 bg-white py-3 text-sm font-semibold text-foreground transition hover:bg-zinc-100"
+              >
+                {isEmbedCodeCopied ? "Code kopiert" : "Einbettungscode kopieren"}
+              </button>
             </div>
           </>
         )}
