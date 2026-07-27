@@ -73,8 +73,6 @@ export default function QueueWidget({
     "--muted-foreground": branding.mutedForegroundColor,
   } as CSSProperties & Record<`--${string}`, string>;
 
-  const checkInUrl = `https://www.walkinly.ch/checkin/${salonSlug}`;
-
   return (
     <main
       className="min-h-screen bg-background p-4"
@@ -100,14 +98,6 @@ export default function QueueWidget({
           </div>
         </div>
 
-        <a
-          href={checkInUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-5 block w-full rounded-2xl bg-primary px-4 py-3 text-center font-semibold text-[var(--primary-foreground)] transition hover:opacity-90"
-        >
-          Warteschlange ansehen
-        </a>
       </section>
     </main>
   );
