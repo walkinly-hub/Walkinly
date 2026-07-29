@@ -49,6 +49,11 @@ export default function QueueStatus({
           Du bist eingecheckt!
         </h1>
 
+        <p className="mt-3 text-[var(--muted-foreground)]">
+          Du kannst den Salon jetzt verlassen. Bitte komm rechtzeitig wieder in
+          den Salon, sobald du die Nummer 1 in der Schlange bist. Vielen Dank.
+        </p>
+
         <p className="mt-6 text-[var(--muted-foreground)]">
           Deine Position
         </p>
