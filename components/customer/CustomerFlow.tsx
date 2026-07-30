@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import QueueOverview from "./QueueOverview";
 import CheckInForm, { type CheckInResult } from "./CheckInForm";
 import QueueStatus from "./QueueStatus";
+import VisitComplete from "./VisitComplete";
 import type { SalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
 
@@ -41,7 +42,7 @@ export default function CustomerFlow({
   initialEstimatedWaitMinutes,
 }: CustomerFlowProps) {
   const [step, setStep] = useState<
-    "overview" | "checkin" | "success"
+    "overview" | "checkin" | "success" | "completed"
   >("overview");
   const [checkInResult, setCheckInResult] = useState<CheckInResult | null>(null);
   const [queueEntryCredentials, setQueueEntryCredentials] =
@@ -78,11 +79,19 @@ export default function CustomerFlow({
       .returns<CustomerQueueEntry[]>()
       .maybeSingle();
 
-    if (error || !data || data.status !== "waiting") {
+    if (error || !data || data.status === "removed") {
       window.localStorage.removeItem(storageKey);
       setQueueEntryCredentials(null);
       setCheckInResult(null);
       setStep("overview");
+      return;
+    }
+
+    if (data.status === "done") {
+      window.localStorage.removeItem(storageKey);
+      setQueueEntryCredentials(null);
+      setCheckInResult(null);
+      setStep("completed");
       return;
     }
 
@@ -271,6 +280,19 @@ export default function CustomerFlow({
           logoInverted={branding.logoInverted}
           salonSlug={salonSlug}
           onCheckIn={handleCheckIn}
+        />
+      </div>
+    );
+  }
+
+  if (step === "completed") {
+    return (
+      <div style={themeStyle}>
+        <VisitComplete
+          salonName={salonName}
+          salonSlug={salonSlug}
+          logoUrl={branding.logoUrl}
+          logoInverted={branding.logoInverted}
         />
       </div>
     );
