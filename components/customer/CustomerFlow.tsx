@@ -132,7 +132,7 @@ export default function CustomerFlow({
     }, 0);
     const intervalId = window.setInterval(() => {
       void refreshQueueSummary();
-    }, 10_000);
+    }, 5_000);
 
     function refreshWhenVisible() {
       if (document.visibilityState === "visible") {

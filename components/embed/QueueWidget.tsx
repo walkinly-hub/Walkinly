@@ -47,7 +47,7 @@ export default function QueueWidget({
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       void refreshQueueSummary();
-    }, 10_000);
+    }, 5_000);
 
     function refreshWhenVisible() {
       if (document.visibilityState === "visible") {
