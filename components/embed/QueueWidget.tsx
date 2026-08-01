@@ -74,31 +74,31 @@ export default function QueueWidget({
   } as CSSProperties & Record<`--${string}`, string>;
 
   return (
-    <main
-      className="min-h-screen bg-background p-4"
-      style={themeStyle}
-    >
-      <section className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-sm">
-        <SalonBrand
-          salonName={salonName}
-          logoUrl={branding.logoUrl}
-          logoInverted={branding.logoInverted}
-        />
+    <>
+      <style>{"html, body { background: transparent !important; }"}</style>
+      <main className="min-h-screen bg-transparent p-4" style={themeStyle}>
+        <section className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-sm">
+          <SalonBrand
+            salonName={salonName}
+            logoUrl={branding.logoUrl}
+            logoInverted={branding.logoInverted}
+          />
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-border bg-background p-4">
-            <p className="text-sm text-[var(--muted-foreground)]">Wartende</p>
-            <p className="mt-1 text-3xl font-bold text-foreground">{waitingCount}</p>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-border bg-background p-4">
+              <p className="text-sm text-[var(--muted-foreground)]">Wartende</p>
+              <p className="mt-1 text-3xl font-bold text-foreground">{waitingCount}</p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-4">
+              <p className="text-sm text-[var(--muted-foreground)]">Geschätzte Wartezeit</p>
+              <p className="mt-1 text-3xl font-bold text-foreground">
+                {estimatedWaitMinutes} Min.
+              </p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-border bg-background p-4">
-            <p className="text-sm text-[var(--muted-foreground)]">Geschätzte Wartezeit</p>
-            <p className="mt-1 text-3xl font-bold text-foreground">
-              {estimatedWaitMinutes} Min.
-            </p>
-          </div>
-        </div>
 
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
