@@ -91,7 +91,7 @@ export default function QueueWidget({
             <p className="mt-1 text-3xl font-bold text-foreground">{waitingCount}</p>
           </div>
           <div className="rounded-2xl border border-border bg-background p-4">
-            <p className="text-sm text-[var(--muted-foreground)]">Wartezeit</p>
+            <p className="text-sm text-[var(--muted-foreground)]">Geschätzte Wartezeit</p>
             <p className="mt-1 text-3xl font-bold text-foreground">
               {estimatedWaitMinutes} Min.
             </p>
