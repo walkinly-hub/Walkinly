@@ -15,7 +15,15 @@ type DashboardState =
       salonName: string;
       salonSlug: string;
       isChairOccupied: boolean;
+      salons: SalonOption[];
     };
+
+type SalonOption = {
+  id: string;
+  name: string;
+  slug: string;
+  isChairOccupied: boolean;
+};
 
 type QueueEntry = {
   entry_id: string;
@@ -70,33 +78,49 @@ export default function DashboardPage() {
       }
 
       const email = user.email ?? "Unbekannte E-Mail-Adresse";
-      const { data: membership } = await supabase
+      const { data: memberships } = await supabase
         .from("salon_members")
         .select("salon_id")
-        .eq("user_id", user.id)
-        .maybeSingle();
+        .eq("user_id", user.id);
 
-      if (!membership) {
+      if (!memberships || memberships.length === 0) {
         setDashboardState({ status: "no-access", email });
         return;
       }
 
-      const { data: salon } = await supabase
+      const { data: salons } = await supabase
         .from("salons")
-        .select("name, slug, current_service_started_at")
-        .eq("id", membership.salon_id)
-        .maybeSingle();
+        .select("id, name, slug, current_service_started_at")
+        .in(
+          "id",
+          memberships.map((membership) => membership.salon_id),
+        );
+
+      const salonOptions: SalonOption[] = (salons ?? []).map((salon) => ({
+        id: salon.id,
+        name: salon.name,
+        slug: salon.slug,
+        isChairOccupied: salon.current_service_started_at !== null,
+      }));
+
+      const selectedSalon = salonOptions[0];
+
+      if (!selectedSalon) {
+        setDashboardState({ status: "no-access", email });
+        return;
+      }
 
       setDashboardState({
         status: "ready",
         email,
-        salonId: membership.salon_id,
-        salonName: salon?.name ?? "Dein Salon",
-        salonSlug: salon?.slug ?? membership.salon_id,
-        isChairOccupied: salon?.current_service_started_at !== null,
+        salonId: selectedSalon.id,
+        salonName: selectedSalon.name,
+        salonSlug: selectedSalon.slug,
+        isChairOccupied: selectedSalon.isChairOccupied,
+        salons: salonOptions,
       });
 
-      await loadQueue(membership.salon_id);
+      await loadQueue(selectedSalon.id);
     }
 
     loadDashboard();
@@ -147,7 +171,15 @@ export default function DashboardPage() {
 
     setDashboardState((current) =>
       current.status === "ready"
-        ? { ...current, isChairOccupied: true }
+        ? {
+            ...current,
+            isChairOccupied: true,
+            salons: current.salons.map((salon) =>
+              salon.id === current.salonId
+                ? { ...salon, isChairOccupied: true }
+                : salon,
+            ),
+          }
         : current,
     );
     await loadQueue(dashboardState.salonId);
@@ -175,9 +207,43 @@ export default function DashboardPage() {
 
     setDashboardState((current) =>
       current.status === "ready"
-        ? { ...current, isChairOccupied: !current.isChairOccupied }
+        ? {
+            ...current,
+            isChairOccupied: !current.isChairOccupied,
+            salons: current.salons.map((salon) =>
+              salon.id === current.salonId
+                ? { ...salon, isChairOccupied: !current.isChairOccupied }
+                : salon,
+            ),
+          }
         : current,
     );
+  }
+
+  function selectSalon(salonId: string) {
+    if (dashboardState.status !== "ready") {
+      return;
+    }
+
+    const selectedSalon = dashboardState.salons.find(
+      (salon) => salon.id === salonId,
+    );
+
+    if (!selectedSalon || selectedSalon.id === dashboardState.salonId) {
+      return;
+    }
+
+    setQueueEntries([]);
+    setQueueError(null);
+    setIsEmbedCodeCopied(false);
+    setDashboardState({
+      ...dashboardState,
+      salonId: selectedSalon.id,
+      salonName: selectedSalon.name,
+      salonSlug: selectedSalon.slug,
+      isChairOccupied: selectedSalon.isChairOccupied,
+    });
+    void loadQueue(selectedSalon.id);
   }
 
   async function handleSignOut() {
@@ -220,6 +286,23 @@ export default function DashboardPage() {
             <p className="mt-3 text-zinc-500">
               Du bist als {dashboardState.email} angemeldet.
             </p>
+
+            {dashboardState.salons.length > 1 && (
+              <label className="mt-6 block text-sm font-medium text-foreground">
+                Salon auswählen
+                <select
+                  value={dashboardState.salonId}
+                  onChange={(event) => selectSalon(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-base font-semibold text-foreground"
+                >
+                  {dashboardState.salons.map((salon) => (
+                    <option key={salon.id} value={salon.id}>
+                      {salon.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
 
             <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
               <p className="text-sm font-medium">
