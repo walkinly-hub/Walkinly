@@ -31,6 +31,7 @@ type QueueEntryCredentials = {
 type CustomerQueueEntry = {
   queue_position: number;
   estimated_wait_minutes: number;
+  is_wait_taking_longer_than_expected: boolean;
   status: "waiting" | "done" | "removed";
 };
 
@@ -98,8 +99,10 @@ export default function CustomerFlow({
     setCheckInResult({
       entryId: queueEntryCredentials.entryId,
       accessToken: queueEntryCredentials.accessToken,
-      queuePosition: data.queue_position,
-      estimatedWaitMinutes: data.estimated_wait_minutes,
+        queuePosition: data.queue_position,
+        estimatedWaitMinutes: data.estimated_wait_minutes,
+        isWaitTakingLongerThanExpected:
+          data.is_wait_taking_longer_than_expected,
     });
     setStep("success");
   }, [queueEntryCredentials, storageKey]);
@@ -306,6 +309,9 @@ export default function CustomerFlow({
         logoInverted={branding.logoInverted}
         queuePosition={checkInResult?.queuePosition ?? 1}
         estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
+        isWaitTakingLongerThanExpected={
+          checkInResult?.isWaitTakingLongerThanExpected ?? false
+        }
         onLeaveQueue={leaveQueue}
       />
     </div>

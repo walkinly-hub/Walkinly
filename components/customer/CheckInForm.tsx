@@ -10,6 +10,7 @@ export type CheckInResult = {
   accessToken: string;
   queuePosition: number;
   estimatedWaitMinutes: number;
+  isWaitTakingLongerThanExpected?: boolean;
 };
 
 type CheckInFormProps = {

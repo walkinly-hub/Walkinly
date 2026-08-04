@@ -1,8 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SalonBrand from "./SalonBrand";
+
+function OverdueWaitTime() {
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+  const [countdownStartedAt] = useState(() => Date.now());
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const remainingMinutes =
+    5 - (Math.floor((currentTime - countdownStartedAt) / 60_000) % 5);
+
+  return (
+    <p className="mt-2 text-2xl font-semibold text-foreground">
+      ca. {remainingMinutes} Minuten
+    </p>
+  );
+}
 
 type QueueStatusProps = {
   salonName: string;
@@ -10,6 +32,7 @@ type QueueStatusProps = {
   logoInverted: boolean;
   queuePosition: number;
   estimatedWaitMinutes: number;
+  isWaitTakingLongerThanExpected: boolean;
   onLeaveQueue: () => Promise<string | null>;
 };
 
@@ -19,6 +42,7 @@ export default function QueueStatus({
   logoInverted,
   queuePosition,
   estimatedWaitMinutes,
+  isWaitTakingLongerThanExpected,
   onLeaveQueue,
 }: QueueStatusProps) {
   const [isLeaving, setIsLeaving] = useState(false);
@@ -67,9 +91,19 @@ export default function QueueStatus({
           Geschätzte Wartezeit
         </p>
 
-        <p className="mt-2 text-2xl font-semibold text-foreground">
-          ca. {estimatedWaitMinutes} Minuten
-        </p>
+        {isWaitTakingLongerThanExpected ? (
+          <OverdueWaitTime />
+        ) : (
+          <p className="mt-2 text-2xl font-semibold text-foreground">
+            ca. {estimatedWaitMinutes} Minuten
+          </p>
+        )}
+
+        {isWaitTakingLongerThanExpected && (
+          <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+            Es scheint etwas länger zu dauern …
+          </p>
+        )}
 
         {errorMessage && (
           <p className="mt-4 text-sm text-red-600" role="alert">
