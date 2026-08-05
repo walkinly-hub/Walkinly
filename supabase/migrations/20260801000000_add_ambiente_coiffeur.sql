@@ -15,7 +15,7 @@ values (
   20,
   jsonb_build_object(
     'logo_url', 'https://www.walkinly.ch/salons/ambiente-coiffeur-logo.png',
-    'logo_inverted', true,
+    'logo_inverted', false,
     'background_color', '#F4F3EC',
     'surface_color', '#FFFFFF',
     'foreground_color', '#0D1712',
