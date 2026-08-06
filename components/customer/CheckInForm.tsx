@@ -18,6 +18,7 @@ type CheckInFormProps = {
   logoUrl?: string;
   logoInverted: boolean;
   salonSlug: string;
+  whatsappNotificationsEnabled: boolean;
   onCheckIn: (result: CheckInResult) => void;
 };
 
@@ -26,9 +27,12 @@ export default function CheckInForm({
   logoUrl,
   logoInverted,
   salonSlug,
+  whatsappNotificationsEnabled,
   onCheckIn,
 }: CheckInFormProps) {
   const [name, setName] = useState("");
+  const [whatsappPhone, setWhatsappPhone] = useState("");
+  const [wantsWhatsAppNotification, setWantsWhatsAppNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,12 +46,24 @@ export default function CheckInForm({
       return;
     }
 
+    const normalizedWhatsAppPhone = whatsappPhone.replace(/[\s()-]/g, "");
+
+    if (
+      wantsWhatsAppNotification &&
+      !/^\+[1-9]\d{7,14}$/.test(normalizedWhatsAppPhone)
+    ) {
+      setErrorMessage("Bitte gib deine Mobilnummer im internationalen Format ein, z. B. +41 79 123 45 67.");
+      return;
+    }
+
     setErrorMessage(null);
     setIsSubmitting(true);
 
     const { data, error } = await supabase.rpc("check_in_customer", {
       p_salon_slug: salonSlug,
       p_customer_name: customerName,
+      p_whatsapp_phone: wantsWhatsAppNotification ? normalizedWhatsAppPhone : null,
+      p_whatsapp_opt_in: wantsWhatsAppNotification,
     });
 
     setIsSubmitting(false);
@@ -91,6 +107,45 @@ export default function CheckInForm({
           required
           className="mt-6 w-full rounded-2xl border border-border bg-background px-4 py-3 text-foreground outline-none placeholder:text-[var(--muted-foreground)] focus:border-primary"
         />
+
+        {whatsappNotificationsEnabled && (
+          <div className="mt-5 rounded-2xl border border-border p-4">
+            <p className="font-semibold text-foreground">
+              Optional: WhatsApp-Benachrichtigung
+            </p>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              Wir informieren dich einmal, wenn du als Nächstes dran bist.
+            </p>
+
+            <label className="mt-4 flex items-start gap-3 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={wantsWhatsAppNotification}
+                onChange={(event) => setWantsWhatsAppNotification(event.target.checked)}
+                disabled={isSubmitting}
+                className="mt-0.5 h-4 w-4 accent-[var(--primary)]"
+              />
+              <span>Ich möchte per WhatsApp benachrichtigt werden.</span>
+            </label>
+
+            {wantsWhatsAppNotification && (
+              <label className="mt-4 block text-sm font-medium text-foreground">
+                Mobilnummer
+                <input
+                  type="tel"
+                  value={whatsappPhone}
+                  onChange={(event) => setWhatsappPhone(event.target.value)}
+                  placeholder="+41 79 123 45 67"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  disabled={isSubmitting}
+                  required
+                  className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-3 text-foreground outline-none placeholder:text-[var(--muted-foreground)] focus:border-primary"
+                />
+              </label>
+            )}
+          </div>
+        )}
 
         {errorMessage && (
           <p className="mt-3 text-sm text-red-600" role="alert">

@@ -14,6 +14,7 @@ type CustomerFlowProps = {
   salonName: string;
   salonSlug: string;
   branding: SalonBranding;
+  whatsappNotificationsEnabled: boolean;
   initialWaitingCount: number;
   initialEstimatedWaitMinutes: number;
 };
@@ -39,6 +40,7 @@ export default function CustomerFlow({
   salonName,
   salonSlug,
   branding,
+  whatsappNotificationsEnabled,
   initialWaitingCount,
   initialEstimatedWaitMinutes,
 }: CustomerFlowProps) {
@@ -282,6 +284,7 @@ export default function CustomerFlow({
           logoUrl={branding.logoUrl}
           logoInverted={branding.logoInverted}
           salonSlug={salonSlug}
+          whatsappNotificationsEnabled={whatsappNotificationsEnabled}
           onCheckIn={handleCheckIn}
         />
       </div>

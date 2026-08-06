@@ -35,7 +35,7 @@ export default async function CheckInPage({
 
   const { data: salon, error: salonError } = await supabase
     .from("salons")
-    .select("branding")
+    .select("branding, whatsapp_notifications_enabled")
     .eq("slug", location)
     .maybeSingle();
 
@@ -48,6 +48,7 @@ export default async function CheckInPage({
       salonName={queueSummary.salon_name}
       salonSlug={location}
       branding={parseSalonBranding(salon.branding)}
+      whatsappNotificationsEnabled={salon.whatsapp_notifications_enabled === true}
       initialWaitingCount={queueSummary.waiting_count}
       initialEstimatedWaitMinutes={queueSummary.estimated_wait_minutes}
     />
