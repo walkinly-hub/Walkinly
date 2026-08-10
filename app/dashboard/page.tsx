@@ -25,6 +25,13 @@ type SalonOption = {
   isChairOccupied: boolean;
 };
 
+type DashboardSalon = {
+  salon_id: string;
+  salon_name: string;
+  salon_slug: string;
+  current_service_started_at: string | null;
+};
+
 type QueueEntry = {
   entry_id: string;
   customer_name: string;
@@ -78,28 +85,20 @@ export default function DashboardPage() {
       }
 
       const email = user.email ?? "Unbekannte E-Mail-Adresse";
-      const { data: memberships } = await supabase
-        .from("salon_members")
-        .select("salon_id")
-        .eq("user_id", user.id);
+      const { data: dashboardSalons, error: salonsError } = await supabase
+        .rpc("get_dashboard_salons")
+        .returns<DashboardSalon[]>();
+      const salons = dashboardSalons as DashboardSalon[] | null;
 
-      if (!memberships || memberships.length === 0) {
+      if (salonsError || !salons || salons.length === 0) {
         setDashboardState({ status: "no-access", email });
         return;
       }
 
-      const { data: salons } = await supabase
-        .from("salons")
-        .select("id, name, slug, current_service_started_at")
-        .in(
-          "id",
-          memberships.map((membership) => membership.salon_id),
-        );
-
-      const salonOptions: SalonOption[] = (salons ?? []).map((salon) => ({
-        id: salon.id,
-        name: salon.name,
-        slug: salon.slug,
+      const salonOptions: SalonOption[] = salons.map((salon) => ({
+        id: salon.salon_id,
+        name: salon.salon_name,
+        slug: salon.salon_slug,
         isChairOccupied: salon.current_service_started_at !== null,
       }));
 
