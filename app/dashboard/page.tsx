@@ -50,6 +50,9 @@ export default function DashboardPage() {
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
   const [isUpdatingChair, setIsUpdatingChair] = useState(false);
   const [isEmbedCodeCopied, setIsEmbedCodeCopied] = useState(false);
+  const [whatsAppTestPhone, setWhatsAppTestPhone] = useState("");
+  const [whatsAppTestStatus, setWhatsAppTestStatus] = useState<string | null>(null);
+  const [isSendingWhatsAppTest, setIsSendingWhatsAppTest] = useState(false);
 
   const loadQueue = useCallback(async (salonId: string, isBackgroundUpdate = false) => {
     if (!isBackgroundUpdate) {
@@ -259,6 +262,34 @@ export default function DashboardPage() {
     window.setTimeout(() => setIsEmbedCodeCopied(false), 2_000);
   }
 
+  async function sendWhatsAppTestMessage() {
+    setWhatsAppTestStatus(null);
+    setIsSendingWhatsAppTest(true);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch("/api/whatsapp/test", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {}),
+      },
+      body: JSON.stringify({ recipientPhone: whatsAppTestPhone }),
+    });
+    const result = (await response.json()) as { error?: string };
+
+    setIsSendingWhatsAppTest(false);
+    setWhatsAppTestStatus(
+      response.ok
+        ? "Testnachricht wurde gesendet."
+        : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
+    );
+  }
+
   if (dashboardState.status === "loading") {
     return null;
   }
@@ -396,6 +427,43 @@ export default function DashboardPage() {
                 {isEmbedCodeCopied ? "Code kopiert" : "Einbettungscode kopieren"}
               </button>
             </div>
+
+            {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
+              <div className="mt-8 border-t border-zinc-100 pt-6">
+                <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
+                <p className="mt-2 text-sm text-zinc-500">
+                  Nur für die Meta-Testnummer. Sende eine Testnachricht an einen
+                  in Meta freigegebenen Testempfänger.
+                </p>
+                <label className="mt-4 block text-sm font-medium text-foreground">
+                  Testempfänger
+                  <input
+                    type="tel"
+                    value={whatsAppTestPhone}
+                    onChange={(event) => setWhatsAppTestPhone(event.target.value)}
+                    placeholder="+41 79 123 45 67"
+                    inputMode="tel"
+                    disabled={isSendingWhatsAppTest}
+                    className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-base text-foreground"
+                  />
+                </label>
+                {whatsAppTestStatus && (
+                  <p className="mt-3 text-sm text-zinc-600" role="status">
+                    {whatsAppTestStatus}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => void sendWhatsAppTestMessage()}
+                  disabled={isSendingWhatsAppTest}
+                  className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isSendingWhatsAppTest
+                    ? "Nachricht wird gesendet..."
+                    : "WhatsApp-Testnachricht senden"}
+                </button>
+              </div>
+            )}
           </>
         )}
 
