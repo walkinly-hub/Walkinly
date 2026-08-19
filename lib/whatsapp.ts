@@ -2,15 +2,13 @@ const whatsappGraphApiVersion = process.env.WHATSAPP_GRAPH_API_VERSION;
 const whatsappPhoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const whatsappAccessToken = process.env.WHATSAPP_ACCESS_TOKEN;
 
-type WhatsAppTextMessage = {
+type WhatsAppTemplateMessage = {
   recipientPhone: string;
-  body: string;
 };
 
-export async function sendWhatsAppTextMessage({
+export async function sendWhatsAppTestTemplate({
   recipientPhone,
-  body,
-}: WhatsAppTextMessage) {
+}: WhatsAppTemplateMessage) {
   if (
     !whatsappGraphApiVersion ||
     !whatsappPhoneNumberId ||
@@ -30,9 +28,12 @@ export async function sendWhatsAppTextMessage({
       body: JSON.stringify({
         messaging_product: "whatsapp",
         to: recipientPhone.replace(/\D/g, ""),
-        type: "text",
-        text: {
-          body,
+        type: "template",
+        template: {
+          name: "hello_world",
+          language: {
+            code: "en_US",
+          },
         },
       }),
     },

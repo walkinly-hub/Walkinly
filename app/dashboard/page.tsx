@@ -285,7 +285,7 @@ export default function DashboardPage() {
     setIsSendingWhatsAppTest(false);
     setWhatsAppTestStatus(
       response.ok
-        ? "Testnachricht wurde gesendet."
+        ? "Meta-Testvorlage wurde zur Zustellung übergeben."
         : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
     );
   }
@@ -432,8 +432,8 @@ export default function DashboardPage() {
               <div className="mt-8 border-t border-zinc-100 pt-6">
                 <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Nur für die Meta-Testnummer. Sende eine Testnachricht an einen
-                  in Meta freigegebenen Testempfänger.
+                  Nur für die Meta-Testnummer. Es wird Metas freigegebene
+                  Testvorlage „Hello World“ an einen Testempfänger gesendet.
                 </p>
                 <label className="mt-4 block text-sm font-medium text-foreground">
                   Testempfänger
