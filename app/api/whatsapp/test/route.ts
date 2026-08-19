@@ -10,7 +10,14 @@ export async function POST(request: Request) {
   const authorization = request.headers.get("authorization");
   const accessToken = authorization?.replace(/^Bearer\s+/i, "");
 
-  if (!supabaseUrl || !supabaseServiceRoleKey || !accessToken) {
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return NextResponse.json(
+      { error: "Die WhatsApp-Testumgebung ist noch nicht vollständig konfiguriert." },
+      { status: 503 },
+    );
+  }
+
+  if (!accessToken) {
     return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
   }
 

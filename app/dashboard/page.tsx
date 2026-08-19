@@ -441,7 +441,7 @@ export default function DashboardPage() {
                     type="tel"
                     value={whatsAppTestPhone}
                     onChange={(event) => setWhatsAppTestPhone(event.target.value)}
-                    placeholder="+41 79 123 45 67"
+                    placeholder="+41791234567"
                     inputMode="tel"
                     disabled={isSendingWhatsAppTest}
                     className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-base text-foreground"
