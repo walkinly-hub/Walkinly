@@ -51,6 +51,7 @@ export default function CustomerFlow({
   const [checkInResult, setCheckInResult] = useState<CheckInResult | null>(null);
   const [queueEntryCredentials, setQueueEntryCredentials] =
     useState<QueueEntryCredentials | null>(null);
+  const [isRestoringQueueEntry, setIsRestoringQueueEntry] = useState(true);
   const [waitingCount, setWaitingCount] = useState(initialWaitingCount);
   const [estimatedWaitMinutes, setEstimatedWaitMinutes] = useState(
     initialEstimatedWaitMinutes,
@@ -83,7 +84,13 @@ export default function CustomerFlow({
       .returns<CustomerQueueEntry[]>()
       .maybeSingle();
 
-    if (error || !data || data.status === "removed") {
+    // A temporary request failure must never make a customer lose their place.
+    // The entry is only discarded after the server explicitly confirms removal.
+    if (error || !data) {
+      return;
+    }
+
+    if (data.status === "removed") {
       window.localStorage.removeItem(storageKey);
       setQueueEntryCredentials(null);
       setCheckInResult(null);
@@ -112,13 +119,9 @@ export default function CustomerFlow({
   }, [queueEntryCredentials, storageKey]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      const storedEntry = window.localStorage.getItem(storageKey);
+    const storedEntry = window.localStorage.getItem(storageKey);
 
-      if (!storedEntry) {
-        return;
-      }
-
+    if (storedEntry) {
       try {
         const parsedEntry = JSON.parse(storedEntry) as Partial<QueueEntryCredentials>;
 
@@ -130,16 +133,16 @@ export default function CustomerFlow({
             entryId: parsedEntry.entryId,
             accessToken: parsedEntry.accessToken,
           });
-          return;
+          setStep("success");
+        } else {
+          window.localStorage.removeItem(storageKey);
         }
       } catch {
-        // Invalid browser data is discarded below.
+        window.localStorage.removeItem(storageKey);
       }
+    }
 
-      window.localStorage.removeItem(storageKey);
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
+    setIsRestoringQueueEntry(false);
   }, [storageKey]);
 
   useEffect(() => {
@@ -193,11 +196,13 @@ export default function CustomerFlow({
   }, [queueEntryCredentials, refreshCustomerQueueEntry]);
 
   useEffect(() => {
-    window.history.replaceState(
-      { ...window.history.state, walkinlyStep: "overview" },
-      "",
-      window.location.href,
-    );
+    if (!window.history.state?.walkinlyStep) {
+      window.history.replaceState(
+        { ...window.history.state, walkinlyStep: "overview" },
+        "",
+        window.location.href,
+      );
+    }
 
     function handleHistoryNavigation(event: PopStateEvent) {
       setStep(event.state?.walkinlyStep === "checkin" ? "checkin" : "overview");
@@ -224,6 +229,11 @@ export default function CustomerFlow({
     };
 
     window.localStorage.setItem(storageKey, JSON.stringify(credentials));
+    window.history.replaceState(
+      { ...window.history.state, walkinlyStep: "success" },
+      "",
+      window.location.href,
+    );
     setQueueEntryCredentials(credentials);
     setCheckInResult(result);
     setStep("success");
@@ -244,6 +254,11 @@ export default function CustomerFlow({
     }
 
     window.localStorage.removeItem(storageKey);
+    window.history.replaceState(
+      { ...window.history.state, walkinlyStep: "overview" },
+      "",
+      window.location.href,
+    );
     setQueueEntryCredentials(null);
     setCheckInResult(null);
     setStep("overview");
@@ -262,6 +277,16 @@ export default function CustomerFlow({
     "--border": branding.borderColor,
     "--muted-foreground": branding.mutedForegroundColor,
   } as CSSProperties & Record<`--${string}`, string>;
+
+  if (isRestoringQueueEntry) {
+    return (
+      <div style={themeStyle}>
+        <main className="min-h-screen bg-background flex items-center justify-center px-6">
+          <p className="text-[var(--muted-foreground)]">Dein Check-in wird geladen …</p>
+        </main>
+      </div>
+    );
+  }
 
   if (step === "overview") {
     return (
