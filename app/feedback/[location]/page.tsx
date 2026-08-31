@@ -1,4 +1,5 @@
 import SalonBrand from "@/components/customer/SalonBrand";
+import FeedbackForm from "@/components/customer/FeedbackForm";
 import { parseSalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
@@ -40,10 +41,10 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   return (
     <main
-      className="flex min-h-screen items-center justify-center bg-background px-6"
+      className="flex min-h-screen items-center justify-center bg-background px-4 py-8"
       style={themeStyle}
     >
-      <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
+      <div className="w-full max-w-md rounded-3xl bg-card p-6 shadow-sm sm:p-8">
         <SalonBrand
           salonName={salon.name}
           logoUrl={branding.logoUrl}
@@ -56,8 +57,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
         <p className="mt-3 text-[var(--muted-foreground)]">
           Vielen Dank, dass du dir kurz Zeit für dein Feedback nehmen möchtest.
-          Das Formular wird gerade vorbereitet.
         </p>
+        <FeedbackForm salonSlug={location} />
       </div>
     </main>
   );
