@@ -9,16 +9,20 @@ export default function AdminLoginPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
     setIsSubmitting(true);
 
+    const requestedNextPath = new URLSearchParams(window.location.search).get("next");
+    const nextPath = requestedNextPath?.startsWith("/dashboard")
+      ? requestedNextPath
+      : "/dashboard";
+
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}${nextPath}`,
       },
     });
 

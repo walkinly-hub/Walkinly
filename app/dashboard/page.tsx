@@ -2,7 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { CSSProperties } from "react";
 
+import SalonBrand from "@/components/customer/SalonBrand";
+import type { SalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
 
 type DashboardState =
@@ -39,7 +42,17 @@ type QueueEntry = {
   checked_in_at: string;
 };
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  requestedSalonSlug?: string;
+  branding?: SalonBranding;
+  brandedSalonName?: string;
+};
+
+export default function DashboardPage({
+  requestedSalonSlug,
+  branding,
+  brandedSalonName,
+}: DashboardPageProps) {
   const router = useRouter();
   const [dashboardState, setDashboardState] = useState<DashboardState>({
     status: "loading",
@@ -83,7 +96,10 @@ export default function DashboardPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace("/admin");
+        const nextPath = requestedSalonSlug
+          ? `/dashboard/${requestedSalonSlug}`
+          : "/dashboard";
+        router.replace(`/admin?next=${encodeURIComponent(nextPath)}`);
         return;
       }
 
@@ -105,7 +121,9 @@ export default function DashboardPage() {
         isChairOccupied: salon.current_service_started_at !== null,
       }));
 
-      const selectedSalon = salonOptions[0];
+      const selectedSalon = requestedSalonSlug
+        ? salonOptions.find((salon) => salon.slug === requestedSalonSlug)
+        : salonOptions[0];
 
       if (!selectedSalon) {
         setDashboardState({ status: "no-access", email });
@@ -126,7 +144,7 @@ export default function DashboardPage() {
     }
 
     loadDashboard();
-  }, [loadQueue, router]);
+  }, [loadQueue, requestedSalonSlug, router]);
 
   useEffect(() => {
     if (dashboardState.status !== "ready") {
@@ -294,36 +312,60 @@ export default function DashboardPage() {
     return null;
   }
 
+  const themeStyle = branding
+    ? ({
+        "--background": branding.backgroundColor,
+        "--foreground": branding.foregroundColor,
+        "--card": branding.surfaceColor,
+        "--primary": branding.primaryColor,
+        "--primary-hover": branding.primaryHoverColor,
+        "--primary-foreground": branding.primaryForegroundColor,
+        "--border": branding.borderColor,
+        "--muted-foreground": branding.mutedForegroundColor,
+      } as CSSProperties & Record<`--${string}`, string>)
+    : undefined;
+
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-6">
+    <main
+      className="min-h-screen bg-background flex items-center justify-center px-6"
+      style={themeStyle}
+    >
       <section className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
-        <p className="text-sm font-medium text-primary">Walkinly</p>
+        {branding && brandedSalonName ? (
+          <SalonBrand
+            salonName={brandedSalonName}
+            logoUrl={branding.logoUrl}
+            logoInverted={branding.logoInverted}
+          />
+        ) : (
+          <p className="text-sm font-medium text-primary">Walkinly</p>
+        )}
 
         {dashboardState.status === "no-access" ? (
           <>
             <h1 className="mt-3 text-3xl font-semibold text-foreground">
               Zugang wird eingerichtet
             </h1>
-            <p className="mt-3 text-zinc-500">
+            <p className="mt-3 text-[var(--muted-foreground)]">
               Für {dashboardState.email} ist noch kein Salon freigegeben.
             </p>
           </>
         ) : (
           <>
-            <h1 className="mt-3 text-3xl font-semibold text-foreground">
-              {dashboardState.salonName}
+            <h1 className="mt-6 text-3xl font-semibold text-foreground">
+              {branding ? "Salon-Dashboard" : dashboardState.salonName}
             </h1>
-            <p className="mt-3 text-zinc-500">
+            <p className="mt-3 text-[var(--muted-foreground)]">
               Du bist als {dashboardState.email} angemeldet.
             </p>
 
-            {dashboardState.salons.length > 1 && (
+            {!requestedSalonSlug && dashboardState.salons.length > 1 && (
               <label className="mt-6 block text-sm font-medium text-foreground">
                 Salon auswählen
                 <select
                   value={dashboardState.salonId}
                   onChange={(event) => selectSalon(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-base font-semibold text-foreground"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-3 text-base font-semibold text-foreground"
                 >
                   {dashboardState.salons.map((salon) => (
                     <option key={salon.id} value={salon.id}>
@@ -334,18 +376,18 @@ export default function DashboardPage() {
               </label>
             )}
 
-            <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
+            <div className="mt-6 rounded-2xl bg-[var(--background)] p-4">
               <p className="text-sm font-medium">
                 {dashboardState.isChairOccupied ? "Stuhl besetzt" : "Stuhl frei"}
               </p>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                 Nutze dies für Kunden, die direkt auf dem Stuhl Platz nehmen.
               </p>
               <button
                 type="button"
                 onClick={handleChairToggle}
                 disabled={isUpdatingChair || servingEntryId !== null}
-                className="mt-4 w-full rounded-xl border border-zinc-200 bg-white py-3 text-sm font-semibold text-foreground hover:bg-zinc-100 transition disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-4 w-full rounded-xl border border-[var(--border)] bg-transparent py-3 text-sm font-semibold text-foreground hover:opacity-80 transition disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isUpdatingChair
                   ? "Status wird gespeichert..."
@@ -355,10 +397,10 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            <div className="mt-8 border-t border-zinc-100 pt-6">
+            <div className="mt-8 border-t border-[var(--border)] pt-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Warteschlange</h2>
-                <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium">
+                <span className="rounded-full bg-[var(--background)] px-3 py-1 text-sm font-medium">
                   {queueEntries.length} wartend
                 </span>
               </div>
@@ -370,11 +412,11 @@ export default function DashboardPage() {
               )}
 
               {isQueueLoading ? (
-                <p className="mt-4 text-sm text-zinc-500">
+                <p className="mt-4 text-sm text-[var(--muted-foreground)]">
                   Warteschlange wird geladen...
                 </p>
               ) : queueEntries.length === 0 ? (
-                <p className="mt-4 text-sm text-zinc-500">
+                <p className="mt-4 text-sm text-[var(--muted-foreground)]">
                   Momentan wartet niemand.
                 </p>
               ) : (
@@ -382,13 +424,13 @@ export default function DashboardPage() {
                   {queueEntries.map((entry) => (
                     <li
                       key={entry.entry_id}
-                      className="flex items-center justify-between gap-4 rounded-2xl bg-zinc-50 p-4"
+                      className="flex items-center justify-between gap-4 rounded-2xl bg-[var(--background)] p-4"
                     >
                       <div>
                         <p className="font-semibold">
                           #{entry.queue_position} · {entry.customer_name}
                         </p>
-                        <p className="mt-1 text-sm text-zinc-500">
+                        <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                           Wartet in der Schlange
                         </p>
                       </div>
@@ -396,7 +438,7 @@ export default function DashboardPage() {
                         type="button"
                         onClick={() => handleServe(entry.entry_id)}
                         disabled={servingEntryId !== null}
-                        className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
+                        className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-[var(--primary-foreground)] hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {servingEntryId === entry.entry_id
                           ? "Wird bedient..."
@@ -408,30 +450,30 @@ export default function DashboardPage() {
               )}
             </div>
 
-            <div className="mt-8 border-t border-zinc-100 pt-6">
+            <div className="mt-8 border-t border-[var(--border)] pt-6">
               <h2 className="text-lg font-semibold">Website-Integration</h2>
-              <p className="mt-2 text-sm text-zinc-500">
+              <p className="mt-2 text-sm text-[var(--muted-foreground)]">
                 Füge diesen Code auf der Website deines Salons ein. Kunden sehen
                 dann die aktuelle Warteschlange und Wartezeit.
               </p>
               <textarea
                 readOnly
                 value={`<iframe src="https://www.walkinly.ch/embed/${dashboardState.salonSlug}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`}
-                className="mt-4 h-28 w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 font-mono text-xs text-zinc-700"
+                className="mt-4 h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 font-mono text-xs text-[var(--muted-foreground)]"
               />
               <button
                 type="button"
                 onClick={() => void copyEmbedCode(dashboardState.salonSlug)}
-                className="mt-3 w-full rounded-xl border border-zinc-200 bg-white py-3 text-sm font-semibold text-foreground transition hover:bg-zinc-100"
+                className="mt-3 w-full rounded-xl border border-[var(--border)] bg-transparent py-3 text-sm font-semibold text-foreground transition hover:opacity-80"
               >
                 {isEmbedCodeCopied ? "Code kopiert" : "Einbettungscode kopieren"}
               </button>
             </div>
 
             {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
-              <div className="mt-8 border-t border-zinc-100 pt-6">
+              <div className="mt-8 border-t border-[var(--border)] pt-6">
                 <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
-                <p className="mt-2 text-sm text-zinc-500">
+                <p className="mt-2 text-sm text-[var(--muted-foreground)]">
                   Nur für die Meta-Testnummer. Es wird Metas freigegebene
                   Testvorlage „Hello World“ an einen Testempfänger gesendet.
                 </p>
@@ -444,11 +486,11 @@ export default function DashboardPage() {
                     placeholder="+41791234567"
                     inputMode="tel"
                     disabled={isSendingWhatsAppTest}
-                    className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-base text-foreground"
+                    className="mt-2 w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-3 text-base text-foreground"
                   />
                 </label>
                 {whatsAppTestStatus && (
-                  <p className="mt-3 text-sm text-zinc-600" role="status">
+                  <p className="mt-3 text-sm text-[var(--muted-foreground)]" role="status">
                     {whatsAppTestStatus}
                   </p>
                 )}
@@ -456,7 +498,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => void sendWhatsAppTestMessage()}
                   disabled={isSendingWhatsAppTest}
-                  className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSendingWhatsAppTest
                     ? "Nachricht wird gesendet..."
@@ -470,7 +512,7 @@ export default function DashboardPage() {
         <button
           type="button"
           onClick={handleSignOut}
-          className="mt-8 w-full rounded-2xl border border-zinc-200 py-3 font-semibold text-foreground hover:bg-zinc-50 transition"
+          className="mt-8 w-full rounded-2xl border border-[var(--border)] py-3 font-semibold text-foreground hover:opacity-80 transition"
         >
           Abmelden
         </button>
