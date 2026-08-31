@@ -284,28 +284,33 @@ export default function DashboardPage({
     setWhatsAppTestStatus(null);
     setIsSendingWhatsAppTest(true);
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    const response = await fetch("/api/whatsapp/test", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(session?.access_token
-          ? { Authorization: `Bearer ${session.access_token}` }
-          : {}),
-      },
-      body: JSON.stringify({ recipientPhone: whatsAppTestPhone }),
-    });
-    const result = (await response.json()) as { error?: string };
+      const response = await fetch("/api/whatsapp/test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
+        body: JSON.stringify({ recipientPhone: whatsAppTestPhone }),
+      });
+      const result = (await response.json()) as { error?: string };
 
-    setIsSendingWhatsAppTest(false);
-    setWhatsAppTestStatus(
-      response.ok
-        ? "Meta-Testvorlage wurde zur Zustellung übergeben."
-        : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
-    );
+      setWhatsAppTestStatus(
+        response.ok
+          ? "Meta-Testvorlage wurde zur Zustellung übergeben."
+          : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
+      );
+    } catch {
+      setWhatsAppTestStatus("Verbindung fehlgeschlagen. Bitte erneut versuchen.");
+    } finally {
+      setIsSendingWhatsAppTest(false);
+    }
   }
 
   if (dashboardState.status === "loading") {
@@ -476,8 +481,9 @@ export default function DashboardPage({
                   <div className="mt-8 border-t border-[var(--border)] pt-6">
                     <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                      Nur für die Meta-Testnummer. Es wird Metas freigegebene
-                      Testvorlage „Hello World“ an einen Testempfänger gesendet.
+                      Sendet Metas „Integration test template“ über die konfigurierte
+                      Geschäftsnummer. Verwende deine eigene private WhatsApp-Nummer
+                      als Testempfänger. Es können Nachrichtengebühren anfallen.
                     </p>
                     <label className="mt-4 block text-sm font-medium text-foreground">
                       Testempfänger

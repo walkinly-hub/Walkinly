@@ -6,6 +6,8 @@ type WhatsAppTemplateMessage = {
   recipientPhone: string;
 };
 
+export class WhatsAppTestError extends Error {}
+
 export async function sendWhatsAppTestTemplate({
   recipientPhone,
 }: WhatsAppTemplateMessage) {
@@ -14,7 +16,7 @@ export async function sendWhatsAppTestTemplate({
     !whatsappPhoneNumberId ||
     !whatsappAccessToken
   ) {
-    throw new Error("WhatsApp ist noch nicht vollständig konfiguriert.");
+    throw new WhatsAppTestError("WhatsApp ist noch nicht vollständig konfiguriert. Bitte die drei WHATSAPP-Variablen in Vercel prüfen und neu deployen.");
   }
 
   const response = await fetch(
@@ -30,7 +32,7 @@ export async function sendWhatsAppTestTemplate({
         to: recipientPhone.replace(/\D/g, ""),
         type: "template",
         template: {
-          name: "hello_world",
+          name: "3p_direct_integration_test_template",
           language: {
             code: "en_US",
           },
@@ -40,6 +42,15 @@ export async function sendWhatsAppTestTemplate({
   );
 
   if (!response.ok) {
-    throw new Error("WhatsApp-Testnachricht konnte nicht gesendet werden.");
+    const result = await response.json().catch(() => null);
+    // Only return numeric diagnostics, never raw Meta errors that may contain secrets.
+    const code = result?.error?.code;
+    const subcode = result?.error?.error_subcode;
+    const diagnostics = [
+      `HTTP ${response.status}`,
+      ...(typeof code === "number" ? [`Meta-Code ${code}`] : []),
+      ...(typeof subcode === "number" ? [`Subcode ${subcode}`] : []),
+    ].join(", ");
+    throw new WhatsAppTestError(`WhatsApp-Testnachricht abgelehnt (${diagnostics}).`);
   }
 }

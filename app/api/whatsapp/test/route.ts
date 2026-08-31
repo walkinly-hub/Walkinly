@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-import { sendWhatsAppTestTemplate } from "@/lib/whatsapp";
+import { sendWhatsAppTestTemplate, WhatsAppTestError } from "@/lib/whatsapp";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -60,9 +60,9 @@ export async function POST(request: Request) {
     await sendWhatsAppTestTemplate({
       recipientPhone,
     });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { error: "WhatsApp-Testnachricht konnte nicht gesendet werden." },
+      { error: error instanceof WhatsAppTestError ? error.message : "WhatsApp-Testnachricht konnte nicht gesendet werden." },
       { status: 502 },
     );
   }
