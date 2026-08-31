@@ -66,6 +66,11 @@ export default function DashboardPage({
   const [whatsAppTestPhone, setWhatsAppTestPhone] = useState("");
   const [whatsAppTestStatus, setWhatsAppTestStatus] = useState<string | null>(null);
   const [isSendingWhatsAppTest, setIsSendingWhatsAppTest] = useState(false);
+  const [whatsAppPin, setWhatsAppPin] = useState("");
+  const [registrationConfirmed, setRegistrationConfirmed] = useState(false);
+  const [isRegisteringWhatsApp, setIsRegisteringWhatsApp] = useState(false);
+  const [registrationStatus, setRegistrationStatus] = useState<string | null>(null);
+  const [registrationSucceeded, setRegistrationSucceeded] = useState(false);
 
   const loadQueue = useCallback(async (salonId: string, isBackgroundUpdate = false) => {
     if (!isBackgroundUpdate) {
@@ -313,6 +318,35 @@ export default function DashboardPage({
     }
   }
 
+  async function registerWhatsAppNumber() {
+    if (!/^\d{6}$/.test(whatsAppPin) || !registrationConfirmed || isRegisteringWhatsApp) return;
+    setIsRegisteringWhatsApp(true);
+    setRegistrationStatus(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch("/api/whatsapp/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ pin: whatsAppPin, confirmed: registrationConfirmed }),
+      });
+      const result = await response.json();
+      if (response.ok && result.success === true) {
+        setRegistrationSucceeded(true);
+        setRegistrationStatus("Nummer registriert. Jetzt kannst du unten die Testnachricht senden.");
+      } else {
+        setRegistrationStatus(result.error ?? "Registrierung nicht bestätigt. Bitte Nummernstatus bei Meta prüfen.");
+      }
+    } catch {
+      setRegistrationStatus("Verbindung fehlgeschlagen. Bitte vor erneutem Registrieren den Nummernstatus bei Meta prüfen.");
+    } finally {
+      setWhatsAppPin("");
+      setIsRegisteringWhatsApp(false);
+    }
+  }
+
   if (dashboardState.status === "loading") {
     return null;
   }
@@ -480,6 +514,36 @@ export default function DashboardPage({
                 {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
                   <div className="mt-8 border-t border-[var(--border)] pt-6">
                     <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
+                    <details className="mt-4 rounded-xl border border-[var(--border)] p-4">
+                      <summary className="cursor-pointer font-medium">Nummer für Cloud API registrieren (Fehler 133010)</summary>
+                      <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                        Registriert die in Vercel konfigurierte Geschäftsnummer. Prüfe dort zuerst die
+                        WHATSAPP_PHONE_NUMBER_ID. Falls schon eine PIN zur Verifizierung in zwei Schritten
+                        existiert, verwende diese. Sonst wähle eine neue sechsstellige PIN und bewahre sie
+                        sicher auf. Dies ist nicht der SMS-Code. Walkinly speichert die PIN nicht dauerhaft.
+                      </p>
+                      <label className="mt-3 block text-sm">
+                        Sechsstellige PIN
+                        <input type="password" inputMode="numeric" autoComplete="new-password"
+                          maxLength={6} value={whatsAppPin}
+                          onChange={(event) => setWhatsAppPin(event.target.value.replace(/\D/g, ""))}
+                          disabled={isRegisteringWhatsApp || registrationSucceeded}
+                          className="mt-2 w-full rounded-xl border border-[var(--border)] bg-transparent p-3" />
+                      </label>
+                      <label className="mt-3 flex items-start gap-2 text-sm">
+                        <input type="checkbox" checked={registrationConfirmed}
+                          onChange={(event) => setRegistrationConfirmed(event.target.checked)}
+                          disabled={isRegisteringWhatsApp || registrationSucceeded} />
+                        Diese Geschäftsnummer wird nicht in einer WhatsApp-Handy-App genutzt.
+                        Ich möchte sie mit dieser PIN für die Cloud API registrieren.
+                      </label>
+                      <button type="button" onClick={() => void registerWhatsAppNumber()}
+                        disabled={isRegisteringWhatsApp || registrationSucceeded || !registrationConfirmed || !/^\d{6}$/.test(whatsAppPin)}
+                        className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-[var(--primary-foreground)] disabled:opacity-60">
+                        {isRegisteringWhatsApp ? "Registrierung läuft..." : "Geschäftsnummer registrieren"}
+                      </button>
+                      {registrationStatus && <p role="status" className="mt-3 text-sm">{registrationStatus}</p>}
+                    </details>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
                       Sendet Metas „Integration test template“ über die konfigurierte
                       Geschäftsnummer. Verwende deine eigene private WhatsApp-Nummer
