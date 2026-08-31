@@ -327,7 +327,7 @@ export default function DashboardPage({
 
   return (
     <main
-      className="min-h-screen bg-background flex items-center justify-center px-6"
+      className="min-h-screen bg-background text-foreground flex items-center justify-center px-6"
       style={themeStyle}
     >
       <section className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
@@ -450,61 +450,65 @@ export default function DashboardPage({
               )}
             </div>
 
-            <div className="mt-8 border-t border-[var(--border)] pt-6">
-              <h2 className="text-lg font-semibold">Website-Integration</h2>
-              <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                Füge diesen Code auf der Website deines Salons ein. Kunden sehen
-                dann die aktuelle Warteschlange und Wartezeit.
-              </p>
-              <textarea
-                readOnly
-                value={`<iframe src="https://www.walkinly.ch/embed/${dashboardState.salonSlug}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`}
-                className="mt-4 h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 font-mono text-xs text-[var(--muted-foreground)]"
-              />
-              <button
-                type="button"
-                onClick={() => void copyEmbedCode(dashboardState.salonSlug)}
-                className="mt-3 w-full rounded-xl border border-[var(--border)] bg-transparent py-3 text-sm font-semibold text-foreground transition hover:opacity-80"
-              >
-                {isEmbedCodeCopied ? "Code kopiert" : "Einbettungscode kopieren"}
-              </button>
-            </div>
-
-            {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
-              <div className="mt-8 border-t border-[var(--border)] pt-6">
-                <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
-                <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                  Nur für die Meta-Testnummer. Es wird Metas freigegebene
-                  Testvorlage „Hello World“ an einen Testempfänger gesendet.
-                </p>
-                <label className="mt-4 block text-sm font-medium text-foreground">
-                  Testempfänger
-                  <input
-                    type="tel"
-                    value={whatsAppTestPhone}
-                    onChange={(event) => setWhatsAppTestPhone(event.target.value)}
-                    placeholder="+41791234567"
-                    inputMode="tel"
-                    disabled={isSendingWhatsAppTest}
-                    className="mt-2 w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-3 text-base text-foreground"
-                  />
-                </label>
-                {whatsAppTestStatus && (
-                  <p className="mt-3 text-sm text-[var(--muted-foreground)]" role="status">
-                    {whatsAppTestStatus}
+            {!requestedSalonSlug && (
+              <>
+                <div className="mt-8 border-t border-[var(--border)] pt-6">
+                  <h2 className="text-lg font-semibold">Website-Integration</h2>
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                    Füge diesen Code auf der Website deines Salons ein. Kunden sehen
+                    dann die aktuelle Warteschlange und Wartezeit.
                   </p>
+                  <textarea
+                    readOnly
+                    value={`<iframe src="https://www.walkinly.ch/embed/${dashboardState.salonSlug}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`}
+                    className="mt-4 h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 font-mono text-xs text-[var(--muted-foreground)]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void copyEmbedCode(dashboardState.salonSlug)}
+                    className="mt-3 w-full rounded-xl border border-[var(--border)] bg-transparent py-3 text-sm font-semibold text-foreground transition hover:opacity-80"
+                  >
+                    {isEmbedCodeCopied ? "Code kopiert" : "Einbettungscode kopieren"}
+                  </button>
+                </div>
+
+                {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
+                  <div className="mt-8 border-t border-[var(--border)] pt-6">
+                    <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      Nur für die Meta-Testnummer. Es wird Metas freigegebene
+                      Testvorlage „Hello World“ an einen Testempfänger gesendet.
+                    </p>
+                    <label className="mt-4 block text-sm font-medium text-foreground">
+                      Testempfänger
+                      <input
+                        type="tel"
+                        value={whatsAppTestPhone}
+                        onChange={(event) => setWhatsAppTestPhone(event.target.value)}
+                        placeholder="+41791234567"
+                        inputMode="tel"
+                        disabled={isSendingWhatsAppTest}
+                        className="mt-2 w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-3 text-base text-foreground"
+                      />
+                    </label>
+                    {whatsAppTestStatus && (
+                      <p className="mt-3 text-sm text-[var(--muted-foreground)]" role="status">
+                        {whatsAppTestStatus}
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => void sendWhatsAppTestMessage()}
+                      disabled={isSendingWhatsAppTest}
+                      className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isSendingWhatsAppTest
+                        ? "Nachricht wird gesendet..."
+                        : "WhatsApp-Testnachricht senden"}
+                    </button>
+                  </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => void sendWhatsAppTestMessage()}
-                  disabled={isSendingWhatsAppTest}
-                  className="mt-3 w-full rounded-xl bg-primary py-3 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSendingWhatsAppTest
-                    ? "Nachricht wird gesendet..."
-                    : "WhatsApp-Testnachricht senden"}
-                </button>
-              </div>
+              </>
             )}
           </>
         )}
