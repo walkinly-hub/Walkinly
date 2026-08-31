@@ -32,6 +32,7 @@ type QueueEntryCredentials = {
 type CustomerQueueEntry = {
   queue_position: number;
   estimated_wait_minutes: number;
+  is_chair_available_immediately: boolean;
   is_wait_taking_longer_than_expected: boolean;
   status: "waiting" | "done" | "removed";
 };
@@ -103,6 +104,7 @@ export default function CustomerFlow({
       accessToken: queueEntryCredentials.accessToken,
         queuePosition: data.queue_position,
         estimatedWaitMinutes: data.estimated_wait_minutes,
+        isChairAvailableImmediately: data.is_chair_available_immediately,
         isWaitTakingLongerThanExpected:
           data.is_wait_taking_longer_than_expected,
     });
@@ -312,6 +314,9 @@ export default function CustomerFlow({
         logoInverted={branding.logoInverted}
         queuePosition={checkInResult?.queuePosition ?? 1}
         estimatedWaitMinutes={checkInResult?.estimatedWaitMinutes ?? 0}
+        isChairAvailableImmediately={
+          checkInResult?.isChairAvailableImmediately ?? false
+        }
         isWaitTakingLongerThanExpected={
           checkInResult?.isWaitTakingLongerThanExpected ?? false
         }

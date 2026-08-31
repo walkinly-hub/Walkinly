@@ -10,6 +10,7 @@ export type CheckInResult = {
   accessToken: string;
   queuePosition: number;
   estimatedWaitMinutes: number;
+  isChairAvailableImmediately: boolean;
   isWaitTakingLongerThanExpected?: boolean;
 };
 
@@ -78,6 +79,8 @@ export default function CheckInForm({
       accessToken: data[0].access_token,
       queuePosition: data[0].queue_position,
       estimatedWaitMinutes: data[0].estimated_wait_minutes,
+      isChairAvailableImmediately:
+        data[0].is_chair_available_immediately,
     });
   }
 

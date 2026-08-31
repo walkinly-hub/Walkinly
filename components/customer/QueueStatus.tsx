@@ -32,6 +32,7 @@ type QueueStatusProps = {
   logoInverted: boolean;
   queuePosition: number;
   estimatedWaitMinutes: number;
+  isChairAvailableImmediately: boolean;
   isWaitTakingLongerThanExpected: boolean;
   onLeaveQueue: () => Promise<string | null>;
 };
@@ -42,6 +43,7 @@ export default function QueueStatus({
   logoInverted,
   queuePosition,
   estimatedWaitMinutes,
+  isChairAvailableImmediately,
   isWaitTakingLongerThanExpected,
   onLeaveQueue,
 }: QueueStatusProps) {
@@ -73,36 +75,44 @@ export default function QueueStatus({
           Du bist eingecheckt!
         </h1>
 
-        <p className="mt-3 text-[var(--muted-foreground)]">
-          Du kannst den Salon jetzt auch verlassen und deine Wartezeit nutzen.
-          Bitte komm rechtzeitig wieder in den Salon, sobald du die Nummer 1 in
-          der Schlange bist. Vielen Dank.
-        </p>
-
-        <p className="mt-6 text-[var(--muted-foreground)]">
-          Deine Position
-        </p>
-
-        <p className="mt-2 text-5xl font-bold text-foreground">
-          #{queuePosition}
-        </p>
-
-        <p className="mt-6 text-[var(--muted-foreground)]">
-          Geschätzte Wartezeit
-        </p>
-
-        {isWaitTakingLongerThanExpected ? (
-          <OverdueWaitTime />
+        {isChairAvailableImmediately ? (
+          <p className="mt-3 text-[var(--muted-foreground)]">
+            Der Stuhl ist frei. Bitte nimm Platz, du wirst gleich bedient.
+          </p>
         ) : (
-          <p className="mt-2 text-2xl font-semibold text-foreground">
-            ca. {estimatedWaitMinutes} Minuten
-          </p>
-        )}
+          <>
+            <p className="mt-3 text-[var(--muted-foreground)]">
+              Du kannst den Salon jetzt auch verlassen und deine Wartezeit nutzen.
+              Bitte komm rechtzeitig wieder in den Salon, sobald du die Nummer 1 in
+              der Schlange bist. Vielen Dank.
+            </p>
 
-        {isWaitTakingLongerThanExpected && (
-          <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-            Es scheint etwas länger zu dauern …
-          </p>
+            <p className="mt-6 text-[var(--muted-foreground)]">
+              Deine Position
+            </p>
+
+            <p className="mt-2 text-5xl font-bold text-foreground">
+              #{queuePosition}
+            </p>
+
+            <p className="mt-6 text-[var(--muted-foreground)]">
+              Geschätzte Wartezeit
+            </p>
+
+            {isWaitTakingLongerThanExpected ? (
+              <OverdueWaitTime />
+            ) : (
+              <p className="mt-2 text-2xl font-semibold text-foreground">
+                ca. {estimatedWaitMinutes} Minuten
+              </p>
+            )}
+
+            {isWaitTakingLongerThanExpected && (
+              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                Es scheint etwas länger zu dauern …
+              </p>
+            )}
+          </>
         )}
 
         {errorMessage && (
@@ -117,7 +127,11 @@ export default function QueueStatus({
           disabled={isLeaving}
           className="mt-8 w-full rounded-2xl border border-border py-3 font-semibold text-foreground transition hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isLeaving ? "Warteschlange wird verlassen..." : "Warteschlange verlassen"}
+          {isLeaving
+            ? "Check-in wird abgebrochen..."
+            : isChairAvailableImmediately
+              ? "Check-in abbrechen"
+              : "Warteschlange verlassen"}
         </button>
 
       </div>
