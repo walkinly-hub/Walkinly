@@ -46,14 +46,17 @@ export default function FeedbackForm({ salonSlug }: { salonSlug: string }) {
   if (isComplete) {
     return (
       <div role="status" className="mt-6 space-y-3 text-foreground">
-        <h2 className="text-xl font-semibold">Vielen Dank für dein Feedback!</h2>
-        <p className="text-[var(--muted-foreground)]">Deine Rückmeldung wurde gespeichert. Du kannst diese Seite jetzt schliessen.</p>
+        <h2 className="text-xl font-semibold">Vielen Dank!</h2>
+        <p className="text-[var(--muted-foreground)]">Deine Rückmeldung wurde gespeichert.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 space-y-6" aria-busy={isSubmitting}>
+    <form onSubmit={handleSubmit} className="mt-3 space-y-6" aria-busy={isSubmitting}>
+      <p className="text-[var(--muted-foreground)]">
+        Vielen Dank, dass du dir kurz Zeit für dein Feedback nimmst.
+      </p>
       <fieldset disabled={isSubmitting} className="space-y-3">
         <legend className="font-medium text-foreground">Wie zufrieden warst du mit deinem Besuch?</legend>
         <div className="flex gap-2">

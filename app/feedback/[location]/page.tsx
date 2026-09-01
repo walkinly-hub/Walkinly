@@ -55,9 +55,6 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
           Dein Feedback
         </h1>
 
-        <p className="mt-3 text-[var(--muted-foreground)]">
-          Vielen Dank, dass du dir kurz Zeit für dein Feedback nehmen möchtest.
-        </p>
         <FeedbackForm salonSlug={location} />
       </div>
     </main>
