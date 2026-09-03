@@ -426,7 +426,12 @@ export default function DashboardPage({
                 type="button"
                 onClick={handleChairToggle}
                 disabled={isUpdatingChair || servingEntryId !== null}
-                className="mt-4 w-full rounded-xl border border-[var(--border)] bg-transparent py-3 text-sm font-semibold text-foreground hover:opacity-80 transition disabled:cursor-not-allowed disabled:opacity-60"
+                aria-pressed={dashboardState.isChairOccupied}
+                className={`mt-4 w-full rounded-xl border py-3 text-sm font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 ${
+                  dashboardState.isChairOccupied
+                    ? "border-primary bg-primary text-[var(--primary-foreground)]"
+                    : "border-primary bg-transparent text-primary"
+                }`}
               >
                 {isUpdatingChair
                   ? "Status wird gespeichert..."
