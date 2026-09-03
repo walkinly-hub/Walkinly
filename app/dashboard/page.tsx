@@ -415,11 +415,23 @@ export default function DashboardPage({
               </label>
             )}
 
-            <div className="mt-6 rounded-2xl bg-[var(--background)] p-4">
+            <div
+              className={`mt-6 rounded-2xl p-4 transition-colors ${
+                dashboardState.isChairOccupied
+                  ? "bg-primary text-[var(--primary-foreground)]"
+                  : "bg-[var(--background)] text-foreground"
+              }`}
+            >
               <p className="text-sm font-medium">
                 {dashboardState.isChairOccupied ? "Stuhl besetzt" : "Stuhl frei"}
               </p>
-              <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              <p
+                className={`mt-1 text-sm ${
+                  dashboardState.isChairOccupied
+                    ? "text-[var(--primary-foreground)] opacity-80"
+                    : "text-[var(--muted-foreground)]"
+                }`}
+              >
                 Nutze dies für Kunden, die direkt auf dem Stuhl Platz nehmen.
               </p>
               <button
@@ -429,8 +441,8 @@ export default function DashboardPage({
                 aria-pressed={dashboardState.isChairOccupied}
                 className={`mt-4 w-full rounded-xl border py-3 text-sm font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 ${
                   dashboardState.isChairOccupied
-                    ? "border-primary bg-primary text-[var(--primary-foreground)]"
-                    : "border-primary bg-transparent text-primary"
+                    ? "border-[var(--card)] bg-[var(--card)] text-primary"
+                    : "border-primary bg-primary text-[var(--primary-foreground)]"
                 }`}
               >
                 {isUpdatingChair
