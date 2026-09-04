@@ -1,3 +1,5 @@
+import { describeWhatsAppError } from "@/lib/whatsapp-error";
+
 const whatsappGraphApiVersion = process.env.WHATSAPP_GRAPH_API_VERSION;
 const whatsappPhoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const whatsappAccessToken = process.env.WHATSAPP_ACCESS_TOKEN;
@@ -81,7 +83,10 @@ export async function registerWhatsAppPhone(pin: string) {
       ...(typeof code === "number" ? [`Meta-Code ${code}`] : []),
       ...(typeof subcode === "number" ? [`Subcode ${subcode}`] : []),
     ].join(", ");
-    throw new WhatsAppTestError(`Registrierung abgelehnt (${diagnostics}). Bitte nicht mehrfach versuchen; zuerst den Fehler prüfen.`);
+    const explanation = describeWhatsAppError(result?.error, [whatsappAccessToken, pin]);
+    throw new WhatsAppTestError(
+      `Registrierung abgelehnt (${diagnostics}).${explanation ? ` Meta-Begründung: ${explanation}.` : " Meta hat keine lesbare Begründung geliefert."} Bitte nicht mehrfach versuchen; zuerst den Fehler prüfen.`,
+    );
   }
   if (result?.success !== true) {
     throw new WhatsAppTestError("Meta hat die Registrierung nicht bestätigt. Bitte den Nummernstatus bei Meta prüfen.");

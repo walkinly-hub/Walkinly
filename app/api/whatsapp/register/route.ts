@@ -35,6 +35,6 @@ export async function POST(request: Request) {
     return NextResponse.json({
       error: error instanceof WhatsAppTestError ? error.message :
         "Registrierung konnte nicht bestätigt werden. Bitte vor einem erneuten Versuch den Nummernstatus bei Meta prüfen.",
-    }, { status: 502 });
+    }, { status: 502, headers: { "Cache-Control": "no-store" } });
   }
 }
