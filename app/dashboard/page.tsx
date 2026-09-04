@@ -42,6 +42,11 @@ type QueueEntry = {
   checked_in_at: string;
 };
 
+type UndoAction = {
+  id: string;
+  message: string;
+};
+
 type DashboardPageProps = {
   requestedSalonSlug?: string;
   branding?: SalonBranding;
@@ -62,6 +67,8 @@ export default function DashboardPage({
   const [isQueueLoading, setIsQueueLoading] = useState(false);
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
   const [isUpdatingChair, setIsUpdatingChair] = useState(false);
+  const [undoAction, setUndoAction] = useState<UndoAction | null>(null);
+  const [isUndoing, setIsUndoing] = useState(false);
   const [isEmbedCodeCopied, setIsEmbedCodeCopied] = useState(false);
   const [whatsAppTestPhone, setWhatsAppTestPhone] = useState("");
   const [whatsAppTestStatus, setWhatsAppTestStatus] = useState<string | null>(null);
@@ -95,6 +102,12 @@ export default function DashboardPage({
 
     setQueueEntries(data as QueueEntry[]);
   }, []);
+
+  useEffect(() => {
+    if (!undoAction) return;
+    const timeoutId = window.setTimeout(() => setUndoAction(null), 30_000);
+    return () => window.clearTimeout(timeoutId);
+  }, [undoAction]);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -185,9 +198,15 @@ export default function DashboardPage({
     setServingEntryId(entryId);
     setQueueError(null);
 
-    const { error } = await supabase.rpc("serve_queue_entry", {
+    let { data: actionId, error } = await supabase.rpc("serve_queue_entry_with_undo", {
       p_entry_id: entryId,
     });
+
+    if (error?.code === "PGRST202") {
+      const fallback = await supabase.rpc("serve_queue_entry", { p_entry_id: entryId });
+      error = fallback.error;
+      actionId = null;
+    }
 
     setServingEntryId(null);
 
@@ -209,6 +228,11 @@ export default function DashboardPage({
           }
         : current,
     );
+    setUndoAction(
+      typeof actionId === "string"
+        ? { id: actionId, message: "Kunde wurde als bedient markiert." }
+        : null,
+    );
     await loadQueue(dashboardState.salonId);
   }
 
@@ -220,10 +244,20 @@ export default function DashboardPage({
     setIsUpdatingChair(true);
     setQueueError(null);
 
-    const { error } = await supabase.rpc("set_salon_busy", {
+    const wasChairOccupied = dashboardState.isChairOccupied;
+    let { data: actionId, error } = await supabase.rpc("set_salon_busy_with_undo", {
       p_salon_id: dashboardState.salonId,
       p_is_busy: !dashboardState.isChairOccupied,
     });
+
+    if (error?.code === "PGRST202") {
+      const fallback = await supabase.rpc("set_salon_busy", {
+        p_salon_id: dashboardState.salonId,
+        p_is_busy: !dashboardState.isChairOccupied,
+      });
+      error = fallback.error;
+      actionId = null;
+    }
 
     setIsUpdatingChair(false);
 
@@ -245,6 +279,49 @@ export default function DashboardPage({
           }
         : current,
     );
+    setUndoAction(
+      typeof actionId === "string"
+        ? {
+            id: actionId,
+            message: wasChairOccupied ? "Stuhl wurde freigegeben." : "Stuhl wurde besetzt.",
+          }
+        : null,
+    );
+  }
+
+  async function handleUndo() {
+    if (!undoAction || dashboardState.status !== "ready") return;
+
+    setIsUndoing(true);
+    setQueueError(null);
+    const { data, error } = await supabase.rpc("undo_dashboard_action", {
+      p_action_id: undoAction.id,
+    });
+    setIsUndoing(false);
+    const undoResult = Array.isArray(data)
+      ? (data[0] as { action_type: string; is_chair_occupied: boolean } | undefined)
+      : undefined;
+
+    if (error || !undoResult) {
+      setUndoAction(null);
+      setQueueError(error?.message ?? "Die Aktion konnte nicht rückgängig gemacht werden.");
+      return;
+    }
+
+    const isChairOccupied = undoResult.is_chair_occupied;
+    setDashboardState((current) =>
+      current.status === "ready"
+        ? {
+            ...current,
+            isChairOccupied,
+            salons: current.salons.map((salon) =>
+              salon.id === current.salonId ? { ...salon, isChairOccupied } : salon,
+            ),
+          }
+        : current,
+    );
+    setUndoAction(null);
+    await loadQueue(dashboardState.salonId);
   }
 
   function selectSalon(salonId: string) {
@@ -263,6 +340,7 @@ export default function DashboardPage({
     setQueueEntries([]);
     setQueueError(null);
     setIsEmbedCodeCopied(false);
+    setUndoAction(null);
     setDashboardState({
       ...dashboardState,
       salonId: selectedSalon.id,
@@ -472,6 +550,23 @@ export default function DashboardPage({
                     : "Stuhl besetzen"}
               </button>
             </div>
+
+            {undoAction && (
+              <div
+                className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-card p-3"
+                role="status"
+              >
+                <p className="text-sm text-foreground">{undoAction.message}</p>
+                <button
+                  type="button"
+                  onClick={() => void handleUndo()}
+                  disabled={isUndoing}
+                  className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-[var(--primary-foreground)] disabled:opacity-60"
+                >
+                  {isUndoing ? "Wird rückgängig..." : "Rückgängig"}
+                </button>
+              </div>
+            )}
 
             <div className="mt-8 border-t border-[var(--border)] pt-6">
               <div className="flex items-center justify-between">
