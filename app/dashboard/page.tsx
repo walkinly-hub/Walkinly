@@ -66,6 +66,8 @@ export default function DashboardPage({
   const [whatsAppTestPhone, setWhatsAppTestPhone] = useState("");
   const [whatsAppTestStatus, setWhatsAppTestStatus] = useState<string | null>(null);
   const [isSendingWhatsAppTest, setIsSendingWhatsAppTest] = useState(false);
+  const [whatsAppDiagnostics, setWhatsAppDiagnostics] = useState<string | null>(null);
+  const [isCheckingWhatsApp, setIsCheckingWhatsApp] = useState(false);
   const [whatsAppPin, setWhatsAppPin] = useState("");
   const [registrationConfirmed, setRegistrationConfirmed] = useState(false);
   const [isRegisteringWhatsApp, setIsRegisteringWhatsApp] = useState(false);
@@ -347,6 +349,24 @@ export default function DashboardPage({
     }
   }
 
+  async function checkWhatsAppConnection() {
+    setIsCheckingWhatsApp(true);
+    setWhatsAppDiagnostics(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch("/api/whatsapp/diagnostics", {
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
+        cache: "no-store",
+      });
+      const result = await response.json() as { report?: string; error?: string };
+      setWhatsAppDiagnostics(response.ok ? result.report ?? "Keine Diagnose erhalten." : result.error ?? "Diagnose fehlgeschlagen.");
+    } catch {
+      setWhatsAppDiagnostics("Verbindung fehlgeschlagen. Bitte erneut versuchen.");
+    } finally {
+      setIsCheckingWhatsApp(false);
+    }
+  }
+
   if (dashboardState.status === "loading") {
     return null;
   }
@@ -531,6 +551,20 @@ export default function DashboardPage({
                 {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
                   <div className="mt-8 border-t border-[var(--border)] pt-6">
                     <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
+                    <button type="button" onClick={() => void checkWhatsAppConnection()}
+                      disabled={isCheckingWhatsApp}
+                      className="mt-3 w-full rounded-xl border border-[var(--border)] py-3 text-sm font-semibold disabled:opacity-60">
+                      {isCheckingWhatsApp ? "Status wird geprüft..." : "Verbindung prüfen (ohne Nachricht)"}
+                    </button>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      Liest die aktive Serverkonfiguration und den Nummernstatus bei Meta.
+                      Ändert nichts und zeigt keine Tokens oder PINs an.
+                    </p>
+                    {whatsAppDiagnostics && (
+                      <pre role="status" className="mt-3 whitespace-pre-wrap break-words rounded-xl border border-[var(--border)] p-3 text-xs">
+                        {whatsAppDiagnostics}
+                      </pre>
+                    )}
                     <details className="mt-4 rounded-xl border border-[var(--border)] p-4">
                       <summary className="cursor-pointer font-medium">Nummer für Cloud API registrieren (Fehler 133010)</summary>
                       <p className="mt-3 text-sm text-[var(--muted-foreground)]">
