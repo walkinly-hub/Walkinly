@@ -55,7 +55,7 @@ export default function QueueStatus({
 
         {isChairAvailableImmediately ? (
           <p className="mt-3 text-[var(--muted-foreground)]">
-            Der Stuhl ist frei. Bitte nimm Platz, du wirst gleich bedient.
+            Du bist jetzt dran. Der Stuhl ist frei – bitte nimm Platz, du wirst gleich bedient.
           </p>
         ) : (
           <>
