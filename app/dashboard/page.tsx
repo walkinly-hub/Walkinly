@@ -310,7 +310,7 @@ export default function DashboardPage({
 
       setWhatsAppTestStatus(
         response.ok
-          ? "Meta-Testvorlage wurde zur Zustellung übergeben."
+          ? "Erinnerungsvorlage wurde an Meta zur Zustellung übergeben. Bitte den Eingang in WhatsApp prüfen."
           : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
       );
     } catch {
@@ -596,9 +596,11 @@ export default function DashboardPage({
                       {registrationStatus && <p role="status" className="mt-3 text-sm">{registrationStatus}</p>}
                     </details>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                      Sendet Metas „Integration test template“ über die konfigurierte
-                      Geschäftsnummer. Verwende deine eigene private WhatsApp-Nummer
-                      als Testempfänger. Es können Nachrichtengebühren anfallen.
+                      Sendet die aktive Vorlage „erinnerungsnachricht“ auf Deutsch (Schweiz)
+                      mit den Beispielwerten „Anna“ und „Salon Beispiel“. Verwende nur deine
+                      eigene private WhatsApp-Nummer als Testempfänger. Dies ist ein manueller
+                      Test, keine automatische Warteschlangen-Benachrichtigung.
+                      Es können Nachrichtengebühren anfallen.
                     </p>
                     <label className="mt-4 block text-sm font-medium text-foreground">
                       Testempfänger

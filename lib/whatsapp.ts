@@ -117,10 +117,18 @@ export async function sendWhatsAppTestTemplate({
         to: recipientPhone.replace(/\D/g, ""),
         type: "template",
         template: {
-          name: "3p_direct_integration_test_template",
+          name: "erinnerungsnachricht",
           language: {
-            code: "en_US",
+            code: "de_CH",
           },
+          // Manual admin test only; these are not real queue/customer values.
+          components: [{
+            type: "body",
+            parameters: [
+              { type: "text", text: "Anna" },
+              { type: "text", text: "Salon Beispiel" },
+            ],
+          }],
         },
       }),
     },
@@ -128,7 +136,7 @@ export async function sendWhatsAppTestTemplate({
 
   if (!response.ok) {
     const result = await response.json().catch(() => null);
-    // Only return numeric diagnostics, never raw Meta errors that may contain secrets.
+    // Include a redacted reason so template/language errors can be diagnosed.
     const code = result?.error?.code;
     const subcode = result?.error?.error_subcode;
     const diagnostics = [
@@ -136,6 +144,7 @@ export async function sendWhatsAppTestTemplate({
       ...(typeof code === "number" ? [`Meta-Code ${code}`] : []),
       ...(typeof subcode === "number" ? [`Subcode ${subcode}`] : []),
     ].join(", ");
-    throw new WhatsAppTestError(`WhatsApp-Testnachricht abgelehnt (${diagnostics}).`);
+    const explanation = describeWhatsAppError(result?.error, [whatsappAccessToken, recipientPhone, recipientPhone.replace(/\D/g, "")]);
+    throw new WhatsAppTestError(`WhatsApp-Testnachricht abgelehnt (${diagnostics}).${explanation ? ` Meta-Begründung: ${explanation}` : ""}`);
   }
 }
