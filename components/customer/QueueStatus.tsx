@@ -1,30 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import SalonBrand from "./SalonBrand";
-
-function OverdueWaitTime() {
-  const [currentTime, setCurrentTime] = useState(() => Date.now());
-  const [countdownStartedAt] = useState(() => Date.now());
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1_000);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
-
-  const remainingMinutes =
-    5 - (Math.floor((currentTime - countdownStartedAt) / 60_000) % 5);
-
-  return (
-    <p className="mt-2 text-2xl font-semibold text-foreground">
-      ca. {remainingMinutes} Minuten
-    </p>
-  );
-}
 
 type QueueStatusProps = {
   salonName: string;
@@ -99,13 +77,9 @@ export default function QueueStatus({
               Geschätzte Wartezeit
             </p>
 
-            {isWaitTakingLongerThanExpected ? (
-              <OverdueWaitTime />
-            ) : (
-              <p className="mt-2 text-2xl font-semibold text-foreground">
-                ca. {estimatedWaitMinutes} Minuten
-              </p>
-            )}
+            <p className="mt-2 text-2xl font-semibold text-foreground">
+              ca. {estimatedWaitMinutes} Minuten
+            </p>
 
             {isWaitTakingLongerThanExpected && (
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">

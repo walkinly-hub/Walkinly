@@ -119,30 +119,34 @@ export default function CustomerFlow({
   }, [queueEntryCredentials, storageKey]);
 
   useEffect(() => {
-    const storedEntry = window.localStorage.getItem(storageKey);
+    const restorationId = window.setTimeout(() => {
+      const storedEntry = window.localStorage.getItem(storageKey);
 
-    if (storedEntry) {
-      try {
-        const parsedEntry = JSON.parse(storedEntry) as Partial<QueueEntryCredentials>;
+      if (storedEntry) {
+        try {
+          const parsedEntry = JSON.parse(storedEntry) as Partial<QueueEntryCredentials>;
 
-        if (
-          typeof parsedEntry.entryId === "string" &&
-          typeof parsedEntry.accessToken === "string"
-        ) {
-          setQueueEntryCredentials({
-            entryId: parsedEntry.entryId,
-            accessToken: parsedEntry.accessToken,
-          });
-          setStep("success");
-        } else {
+          if (
+            typeof parsedEntry.entryId === "string" &&
+            typeof parsedEntry.accessToken === "string"
+          ) {
+            setQueueEntryCredentials({
+              entryId: parsedEntry.entryId,
+              accessToken: parsedEntry.accessToken,
+            });
+            setStep("success");
+          } else {
+            window.localStorage.removeItem(storageKey);
+          }
+        } catch {
           window.localStorage.removeItem(storageKey);
         }
-      } catch {
-        window.localStorage.removeItem(storageKey);
       }
-    }
 
-    setIsRestoringQueueEntry(false);
+      setIsRestoringQueueEntry(false);
+    }, 0);
+
+    return () => window.clearTimeout(restorationId);
   }, [storageKey]);
 
   useEffect(() => {
