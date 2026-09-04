@@ -57,9 +57,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendWhatsAppTestTemplate({
+    const reference = await sendWhatsAppTestTemplate({
       recipientPhone,
     });
+    return NextResponse.json({ success: true, reference });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof WhatsAppTestError ? error.message : "WhatsApp-Testnachricht konnte nicht gesendet werden." },
@@ -67,5 +68,4 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ success: true });
 }

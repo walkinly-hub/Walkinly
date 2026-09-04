@@ -1,4 +1,5 @@
 import { describeWhatsAppError } from "@/lib/whatsapp-error";
+import { messageReference } from "@/lib/whatsapp-webhook";
 
 const whatsappGraphApiVersion = process.env.WHATSAPP_GRAPH_API_VERSION;
 const whatsappPhoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
@@ -147,4 +148,6 @@ export async function sendWhatsAppTestTemplate({
     const explanation = describeWhatsAppError(result?.error, [whatsappAccessToken, recipientPhone, recipientPhone.replace(/\D/g, "")]);
     throw new WhatsAppTestError(`WhatsApp-Testnachricht abgelehnt (${diagnostics}).${explanation ? ` Meta-Begründung: ${explanation}` : ""}`);
   }
+  const result = await response.json().catch(() => null);
+  return messageReference(result?.messages?.[0]?.id);
 }

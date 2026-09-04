@@ -306,11 +306,11 @@ export default function DashboardPage({
         },
         body: JSON.stringify({ recipientPhone: whatsAppTestPhone }),
       });
-      const result = (await response.json()) as { error?: string };
+      const result = (await response.json()) as { error?: string; reference?: string };
 
       setWhatsAppTestStatus(
         response.ok
-          ? "Erinnerungsvorlage wurde an Meta zur Zustellung übergeben. Bitte den Eingang in WhatsApp prüfen."
+          ? `Erinnerungsvorlage wurde an Meta zur Zustellung übergeben. Die Zustellung ist noch nicht bestätigt.${result.reference ? ` Prüf-ID: ${result.reference}.` : ""} Bitte den Eingang in WhatsApp prüfen.`
           : result.error ?? "Die Testnachricht konnte nicht gesendet werden.",
       );
     } catch {
