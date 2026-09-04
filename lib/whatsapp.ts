@@ -97,6 +97,12 @@ export async function registerWhatsAppPhone(pin: string) {
 export async function sendWhatsAppTestTemplate({
   recipientPhone,
 }: WhatsAppTemplateMessage) {
+  return sendWhatsAppReminder({ recipientPhone, customerName: "Anna", salonName: "Salon Beispiel" });
+}
+
+export async function sendWhatsAppReminder({ recipientPhone, customerName, salonName }: {
+  recipientPhone: string; customerName: string; salonName: string;
+}) {
   if (
     !whatsappGraphApiVersion ||
     !whatsappPhoneNumberId ||
@@ -122,16 +128,16 @@ export async function sendWhatsAppTestTemplate({
           language: {
             code: "de_CH",
           },
-          // Manual admin test only; these are not real queue/customer values.
           components: [{
             type: "body",
             parameters: [
-              { type: "text", text: "Anna" },
-              { type: "text", text: "Salon Beispiel" },
+              { type: "text", text: customerName.replace(/\s+/g, " ").trim().slice(0, 80) },
+              { type: "text", text: salonName.replace(/\s+/g, " ").trim().slice(0, 200) },
             ],
           }],
         },
       }),
+      signal: AbortSignal.timeout(15_000),
     },
   );
 
