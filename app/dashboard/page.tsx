@@ -47,6 +47,24 @@ type UndoAction = {
   message: string;
 };
 
+type StatisticsPeriod = 7 | 30 | 90;
+
+type DashboardStatistics = {
+  check_ins: number;
+  served: number;
+  removed: number;
+  feedback_count: number;
+  average_rating: number | null;
+  rating_distribution: Record<"1" | "2" | "3" | "4" | "5", number>;
+  daily_check_ins: { date: string; count: number }[];
+  recent_feedback: {
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+  }[];
+};
+
 type DashboardPageProps = {
   requestedSalonSlug?: string;
   branding?: SalonBranding;
@@ -69,6 +87,10 @@ export default function DashboardPage({
   const [isUpdatingChair, setIsUpdatingChair] = useState(false);
   const [undoAction, setUndoAction] = useState<UndoAction | null>(null);
   const [isUndoing, setIsUndoing] = useState(false);
+  const [statisticsPeriod, setStatisticsPeriod] = useState<StatisticsPeriod>(30);
+  const [statistics, setStatistics] = useState<DashboardStatistics | null>(null);
+  const [statisticsError, setStatisticsError] = useState<string | null>(null);
+  const [isStatisticsLoading, setIsStatisticsLoading] = useState(false);
   const [isEmbedCodeCopied, setIsEmbedCodeCopied] = useState(false);
   const [whatsAppTestPhone, setWhatsAppTestPhone] = useState("");
   const [whatsAppTestStatus, setWhatsAppTestStatus] = useState<string | null>(null);
@@ -101,6 +123,30 @@ export default function DashboardPage({
     }
 
     setQueueEntries(data as QueueEntry[]);
+  }, []);
+
+  const loadStatistics = useCallback(async (salonId: string, days: StatisticsPeriod) => {
+    setIsStatisticsLoading(true);
+    setStatisticsError(null);
+
+    const { data, error } = await supabase.rpc("get_dashboard_statistics", {
+      p_salon_id: salonId,
+      p_days: days,
+    });
+
+    setIsStatisticsLoading(false);
+
+    if (error || !data || typeof data !== "object" || Array.isArray(data)) {
+      setStatistics(null);
+      setStatisticsError(
+        error?.code === "PGRST202"
+          ? "Die Statistikfunktion muss zuerst in Supabase aktiviert werden."
+          : "Die Statistiken konnten nicht geladen werden.",
+      );
+      return;
+    }
+
+    setStatistics(data as unknown as DashboardStatistics);
   }, []);
 
   useEffect(() => {
@@ -189,6 +235,15 @@ export default function DashboardPage({
       document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [dashboardState, loadQueue]);
+
+  useEffect(() => {
+    if (dashboardState.status !== "ready") return;
+    const salonId = dashboardState.salonId;
+    const timeoutId = window.setTimeout(() => {
+      void loadStatistics(salonId, statisticsPeriod);
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [dashboardState, loadStatistics, statisticsPeriod]);
 
   async function handleServe(entryId: string) {
     if (dashboardState.status !== "ready") {
@@ -321,6 +376,7 @@ export default function DashboardPage({
         : current,
     );
     setUndoAction(null);
+    setStatistics(null);
     await loadQueue(dashboardState.salonId);
   }
 
@@ -341,6 +397,7 @@ export default function DashboardPage({
     setQueueError(null);
     setIsEmbedCodeCopied(false);
     setUndoAction(null);
+    setStatistics(null);
     setDashboardState({
       ...dashboardState,
       salonId: selectedSalon.id,
@@ -619,6 +676,145 @@ export default function DashboardPage({
                   ))}
                 </ul>
               )}
+            </div>
+
+            <div className="mt-8 border-t border-[var(--border)] pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-semibold">Meine Statistiken</h2>
+                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    Digitale Nachfrage und Kundenfeedback
+                  </p>
+                </div>
+                <select
+                  value={statisticsPeriod}
+                  onChange={(event) =>
+                    setStatisticsPeriod(Number(event.target.value) as StatisticsPeriod)
+                  }
+                  aria-label="Statistikzeitraum"
+                  className="rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-sm font-semibold"
+                >
+                  <option value={7}>7 Tage</option>
+                  <option value={30}>30 Tage</option>
+                  <option value={90}>90 Tage</option>
+                </select>
+              </div>
+
+              {isStatisticsLoading ? (
+                <p className="mt-4 text-sm text-[var(--muted-foreground)]">
+                  Statistiken werden geladen...
+                </p>
+              ) : statisticsError ? (
+                <p className="mt-4 rounded-xl bg-[var(--background)] p-4 text-sm text-[var(--muted-foreground)]">
+                  {statisticsError}
+                </p>
+              ) : statistics ? (
+                <>
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {[
+                      ["Check-ins", statistics.check_ins],
+                      ["Bedient", statistics.served],
+                      ["Entfernt", statistics.removed],
+                      ["Bewertungen", statistics.feedback_count],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-2xl bg-[var(--background)] p-4">
+                        <p className="text-2xl font-semibold">{value}</p>
+                        <p className="mt-1 text-xs text-[var(--muted-foreground)]">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-[var(--background)] p-4">
+                    <div className="flex items-end justify-between gap-3">
+                      <div>
+                        <h3 className="font-semibold">Digitale Check-ins</h3>
+                        <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                          Letzte 7 Tage
+                        </p>
+                      </div>
+                      <p className="text-sm font-semibold">{statistics.check_ins} im Zeitraum</p>
+                    </div>
+                    <div className="mt-4 space-y-2">
+                      {statistics.daily_check_ins.slice(-7).map((day) => {
+                        const maximum = Math.max(
+                          1,
+                          ...statistics.daily_check_ins.slice(-7).map((item) => item.count),
+                        );
+                        return (
+                          <div key={day.date} className="grid grid-cols-[4.5rem_1fr_2rem] items-center gap-2 text-xs">
+                            <span>{new Intl.DateTimeFormat("de-CH", { weekday: "short", day: "2-digit" }).format(new Date(`${day.date}T12:00:00`))}</span>
+                            <div className="h-2 overflow-hidden rounded-full bg-[var(--border)]">
+                              <div
+                                className="h-full rounded-full bg-primary"
+                                style={{ width: `${(day.count / maximum) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-right font-semibold">{day.count}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-[var(--background)] p-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="font-semibold">Feedback</h3>
+                      <p className="text-xl font-semibold">
+                        {statistics.average_rating === null
+                          ? "–"
+                          : `${Number(statistics.average_rating).toFixed(1)} ★`}
+                      </p>
+                    </div>
+                    <div className="mt-4 space-y-2">
+                      {([5, 4, 3, 2, 1] as const).map((rating) => {
+                        const count = statistics.rating_distribution[String(rating) as "1" | "2" | "3" | "4" | "5"];
+                        const share = statistics.feedback_count
+                          ? (count / statistics.feedback_count) * 100
+                          : 0;
+                        return (
+                          <div key={rating} className="grid grid-cols-[2rem_1fr_2rem] items-center gap-2 text-xs">
+                            <span>{rating} ★</span>
+                            <div className="h-2 overflow-hidden rounded-full bg-[var(--border)]">
+                              <div className="h-full rounded-full bg-primary" style={{ width: `${share}%` }} />
+                            </div>
+                            <span className="text-right">{count}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mt-5 border-t border-[var(--border)] pt-4">
+                      <h4 className="text-sm font-semibold">Neueste Rückmeldungen</h4>
+                      {statistics.recent_feedback.length === 0 ? (
+                        <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                          In diesem Zeitraum gibt es noch keine Rückmeldungen.
+                        </p>
+                      ) : (
+                        <ul className="mt-3 space-y-3">
+                          {statistics.recent_feedback.map((feedback) => (
+                            <li key={feedback.id} className="rounded-xl bg-card p-3">
+                              <div className="flex justify-between gap-3 text-sm">
+                                <span className="font-semibold">{feedback.rating} ★</span>
+                                <time className="text-xs text-[var(--muted-foreground)]">
+                                  {new Intl.DateTimeFormat("de-CH").format(new Date(feedback.created_at))}
+                                </time>
+                              </div>
+                              <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">
+                                {feedback.comment || "Keine schriftliche Rückmeldung"}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="mt-3 text-xs text-[var(--muted-foreground)]">
+                    „Bedient“ bedeutet aktuell: im Dashboard als bedient markiert. Auslastung
+                    und Behandlungsdauer folgen, sobald historische Start- und Endzeiten erfasst werden.
+                  </p>
+                </>
+              ) : null}
             </div>
 
             {!requestedSalonSlug && (
