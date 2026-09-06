@@ -51,6 +51,7 @@ test('uses claimed database names/number, ignores payload contact data, duplicat
   assert.equal(app.sent[0].customerName, 'Lina');
   assert.equal(app.sent[0].salonName, 'Test Salon');
   assert.equal(app.sent[0].recipientPhone, '+41790000000');
+  assert.equal(app.sent[0].timeoutMs, 8000);
   assert.equal(app.saved[0].state, 'accepted');
 });
 test('ineligible entry or database failure never sends', async () => {

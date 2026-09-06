@@ -100,8 +100,8 @@ export async function sendWhatsAppTestTemplate({
   return sendWhatsAppReminder({ recipientPhone, customerName: "Anna", salonName: "Salon Beispiel" });
 }
 
-export async function sendWhatsAppReminder({ recipientPhone, customerName, salonName }: {
-  recipientPhone: string; customerName: string; salonName: string;
+export async function sendWhatsAppReminder({ recipientPhone, customerName, salonName, timeoutMs = 15_000 }: {
+  recipientPhone: string; customerName: string; salonName: string; timeoutMs?: number;
 }) {
   if (
     !whatsappGraphApiVersion ||
@@ -137,7 +137,7 @@ export async function sendWhatsAppReminder({ recipientPhone, customerName, salon
           }],
         },
       }),
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(timeoutMs),
     },
   );
 

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   let state = "failed";
   try {
     reference = await sendWhatsAppReminder({ recipientPhone: reminder.recipient_phone,
-      customerName: reminder.customer_name, salonName: reminder.salon_name });
+      customerName: reminder.customer_name, salonName: reminder.salon_name, timeoutMs: 8_000 });
     state = "accepted";
   } catch {
     // Never log the provider exception: it may contain customer data.

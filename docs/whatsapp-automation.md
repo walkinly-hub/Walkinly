@@ -37,7 +37,8 @@ Unter **Database → Webhooks → Create webhook** einen Webhook anlegen:
 - Header `Content-Type`: `application/json`
 - Header `Authorization`: `Bearer DEIN_DISPATCH_SECRET`
   (nach `Bearer` ein Leerzeichen, danach der exakte Wert aus Vercel).
-- Timeout, falls einstellbar: **20000 ms**.
+- Timeout: **10000 ms** (das Maximum der Supabase-Oberfläche). Der automatische
+  Meta-Aufruf bricht intern schon nach 8000 ms ab, damit die App vorher antwortet.
 
 Speichern. Der Webhook übermittelt keine Telefonnummern oder Namen; der Server
 liest die Daten erst nach Authentifizierung und Prüfung aus Supabase.
