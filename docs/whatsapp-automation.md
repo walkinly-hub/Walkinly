@@ -45,6 +45,22 @@ liest die Daten erst nach Authentifizierung und Prüfung aus Supabase.
 Dies ist ein ZUSÄTZLICHER Webhook. Den bestehenden Meta-Webhook
 `/api/whatsapp/webhook` und sein `messages`-Abonnement nicht ändern.
 
+### Ausweichweg beim Fehler `supabase_functions does not exist`
+
+Das Dashboard-Formular nicht weiter verwenden und das Schema nicht selbst
+reparieren. Stattdessen unter **Integrations → Vault → Secrets** ein Secret anlegen:
+
+- Name: `walkinly_whatsapp_dispatch_secret`
+- Secret value: exakt der Wert von `WHATSAPP_DISPATCH_SECRET` aus Vercel
+- Description: `Authentifiziert den WhatsApp-Reminder-Dispatch`
+
+Danach im SQL Editor den vollständigen Inhalt von
+`supabase/migrations/20260906010000_add_pg_net_whatsapp_dispatch.sql` einmal
+ausführen. Die Migration prüft `pg_net`, Vault und die Mindestlänge des Secrets,
+bevor sie den Trigger erstellt. Der Klartextwert steht nicht in der Migration.
+Keinen zusätzlichen Dashboard-Webhook anlegen. Der direkte Trigger sendet das
+gleiche, PII-minimale Ereignis mit 10000 ms Timeout.
+
 ## 4. Kontrollierter Test
 
 In einem freigegebenen Testszenario die eigene private WhatsApp-Nummer nutzen,
