@@ -316,6 +316,7 @@ export default function CustomerFlow({
           logoInverted={branding.logoInverted}
           salonSlug={salonSlug}
           whatsappNotificationsEnabled={whatsappNotificationsEnabled}
+          prospectiveQueuePosition={waitingCount + 1}
           onCheckIn={handleCheckIn}
         />
       </div>

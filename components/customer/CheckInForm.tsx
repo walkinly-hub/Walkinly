@@ -20,6 +20,7 @@ type CheckInFormProps = {
   logoInverted: boolean;
   salonSlug: string;
   whatsappNotificationsEnabled: boolean;
+  prospectiveQueuePosition: number;
   onCheckIn: (result: CheckInResult) => void;
 };
 
@@ -29,6 +30,7 @@ export default function CheckInForm({
   logoInverted,
   salonSlug,
   whatsappNotificationsEnabled,
+  prospectiveQueuePosition,
   onCheckIn,
 }: CheckInFormProps) {
   const [name, setName] = useState("");
@@ -36,6 +38,8 @@ export default function CheckInForm({
   const [wantsWhatsAppNotification, setWantsWhatsAppNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const whatsappOptionAvailable =
+    whatsappNotificationsEnabled && prospectiveQueuePosition >= 3;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,7 +54,7 @@ export default function CheckInForm({
     const normalizedWhatsAppPhone = whatsappPhone.replace(/[\s()-]/g, "");
 
     if (
-      wantsWhatsAppNotification &&
+      whatsappOptionAvailable && wantsWhatsAppNotification &&
       !/^\+[1-9]\d{7,14}$/.test(normalizedWhatsAppPhone)
     ) {
       setErrorMessage("Bitte gib deine Mobilnummer im internationalen Format ein, z. B. +41 79 123 45 67.");
@@ -63,8 +67,8 @@ export default function CheckInForm({
     const { data, error } = await supabase.rpc("check_in_customer", {
       p_salon_slug: salonSlug,
       p_customer_name: customerName,
-      p_whatsapp_phone: wantsWhatsAppNotification ? normalizedWhatsAppPhone : null,
-      p_whatsapp_opt_in: wantsWhatsAppNotification,
+      p_whatsapp_phone: whatsappOptionAvailable && wantsWhatsAppNotification ? normalizedWhatsAppPhone : null,
+      p_whatsapp_opt_in: whatsappOptionAvailable && wantsWhatsAppNotification,
     });
 
     setIsSubmitting(false);
@@ -111,7 +115,7 @@ export default function CheckInForm({
           className="mt-6 w-full rounded-2xl border border-border bg-background px-4 py-3 text-foreground outline-none placeholder:text-[var(--muted-foreground)] focus:border-primary"
         />
 
-        {whatsappNotificationsEnabled && (
+        {whatsappOptionAvailable && (
           <div className="mt-5 rounded-2xl border border-border p-4">
             <p className="font-semibold text-foreground">
               Optional: WhatsApp-Benachrichtigung
