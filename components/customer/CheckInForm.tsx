@@ -101,14 +101,14 @@ export default function CheckInForm({
         </h1>
 
         <p className="mt-3 text-[var(--muted-foreground)]">
-          Gib deinen Vornamen ein.
+          Gib deinen Vornamen ein – oder einfach den Namen, mit dem wir dich ansprechen dürfen.
         </p>
 
         <input
           type="text"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Vorname"
+          placeholder="Vorname oder Rufname"
           maxLength={80}
           disabled={isSubmitting}
           required
