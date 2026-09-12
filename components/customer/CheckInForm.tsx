@@ -108,7 +108,7 @@ export default function CheckInForm({
           type="text"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Vorname oder Rufname"
+          placeholder="Name"
           maxLength={80}
           disabled={isSubmitting}
           required
