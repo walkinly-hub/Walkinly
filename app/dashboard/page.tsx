@@ -612,7 +612,7 @@ export default function DashboardPage({
                       </p>
                     </div>
                   ) : (
-                    <ul className="mt-4 grid gap-3 xl:grid-cols-2">
+                    <ul className="mt-4 space-y-3">
                       {queueEntries.map((entry) => (
                         <li
                           key={entry.entry_id}
@@ -712,18 +712,26 @@ export default function DashboardPage({
                     Digitale Nachfrage und Kundenfeedback
                   </p>
                 </div>
-                <select
-                  value={statisticsPeriod}
-                  onChange={(event) =>
-                    setStatisticsPeriod(Number(event.target.value) as StatisticsPeriod)
-                  }
-                  aria-label="Statistikzeitraum"
-                  className="rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-sm font-semibold"
-                >
-                  <option value={7}>7 Tage</option>
-                  <option value={30}>30 Tage</option>
-                  <option value={90}>90 Tage</option>
-                </select>
+                <fieldset>
+                  <legend className="sr-only">Statistikzeitraum</legend>
+                  <div className="flex rounded-xl bg-[var(--background)] p-1">
+                    {([7, 30, 90] as const).map((days) => (
+                      <button
+                        key={days}
+                        type="button"
+                        onClick={() => setStatisticsPeriod(days)}
+                        aria-pressed={statisticsPeriod === days}
+                        className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-4 ${
+                          statisticsPeriod === days
+                            ? "bg-primary text-[var(--primary-foreground)] shadow-sm"
+                            : "text-foreground hover:bg-card"
+                        }`}
+                      >
+                        {days} Tage
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
               </div>
 
               {isStatisticsLoading ? (
