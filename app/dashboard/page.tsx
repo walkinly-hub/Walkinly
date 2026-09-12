@@ -521,10 +521,10 @@ export default function DashboardPage({
 
   return (
     <main
-      className="min-h-screen bg-background text-foreground flex items-center justify-center px-6"
+      className="min-h-screen bg-background px-4 py-4 text-foreground sm:px-6 sm:py-6 lg:px-8 lg:py-10"
       style={themeStyle}
     >
-      <section className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm">
+      <section className="mx-auto w-full max-w-7xl rounded-3xl bg-card p-5 shadow-sm sm:p-7 lg:p-10">
         {branding && brandedSalonName ? (
           <SalonBrand
             salonName={brandedSalonName}
@@ -546,7 +546,7 @@ export default function DashboardPage({
           </>
         ) : (
           <>
-            <h1 className="mt-6 text-3xl font-semibold text-foreground">
+            <h1 className="mt-6 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               {branding ? "Salon-Dashboard" : dashboardState.salonName}
             </h1>
             <p className="mt-3 text-[var(--muted-foreground)]">
@@ -554,7 +554,7 @@ export default function DashboardPage({
             </p>
 
             {!requestedSalonSlug && dashboardState.salons.length > 1 && (
-              <label className="mt-6 block text-sm font-medium text-foreground">
+              <label className="mt-6 block max-w-sm text-sm font-medium text-foreground">
                 Salon auswählen
                 <select
                   value={dashboardState.salonId}
@@ -570,112 +570,138 @@ export default function DashboardPage({
               </label>
             )}
 
-            <div
-              className={`mt-6 rounded-2xl p-4 transition-colors ${
-                dashboardState.isChairOccupied
-                  ? "bg-primary text-[var(--primary-foreground)]"
-                  : "bg-[var(--background)] text-foreground"
-              }`}
-            >
-              <p className="text-sm font-medium">
-                {dashboardState.isChairOccupied ? "Stuhl besetzt" : "Stuhl frei"}
-              </p>
-              <p
-                className={`mt-1 text-sm ${
-                  dashboardState.isChairOccupied
-                    ? "text-[var(--primary-foreground)] opacity-80"
-                    : "text-[var(--muted-foreground)]"
-                }`}
-              >
-                Nutze dies für Kunden, die direkt auf dem Stuhl Platz nehmen.
-              </p>
-              <button
-                type="button"
-                onClick={handleChairToggle}
-                disabled={isUpdatingChair || servingEntryId !== null}
-                aria-pressed={dashboardState.isChairOccupied}
-                className={`mt-4 w-full rounded-xl border py-3 text-sm font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 ${
-                  dashboardState.isChairOccupied
-                    ? "border-[var(--card)] bg-[var(--card)] text-primary"
-                    : "border-primary bg-primary text-[var(--primary-foreground)]"
-                }`}
-              >
-                {isUpdatingChair
-                  ? "Status wird gespeichert..."
-                  : dashboardState.isChairOccupied
-                    ? "Stuhl freigeben"
-                    : "Stuhl besetzen"}
-              </button>
-            </div>
-
-            {undoAction && (
-              <div
-                className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-card p-3"
-                role="status"
-              >
-                <p className="text-sm text-foreground">{undoAction.message}</p>
-                <button
-                  type="button"
-                  onClick={() => void handleUndo()}
-                  disabled={isUndoing}
-                  className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-[var(--primary-foreground)] disabled:opacity-60"
-                >
-                  {isUndoing ? "Wird rückgängig..." : "Rückgängig"}
-                </button>
-              </div>
-            )}
-
-            <div className="mt-8 border-t border-[var(--border)] pt-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Warteschlange</h2>
-                <span className="rounded-full bg-[var(--background)] px-3 py-1 text-sm font-medium">
+            <div className="mt-8">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                    Live-Betrieb
+                  </p>
+                  <h2 className="mt-1 text-2xl font-semibold tracking-tight">
+                    Warteschlangen-Management
+                  </h2>
+                </div>
+                <span className="rounded-full bg-[var(--background)] px-4 py-2 text-sm font-semibold">
                   {queueEntries.length} wartend
                 </span>
               </div>
 
               {queueError && (
-                <p className="mt-3 text-sm text-red-600" role="alert">
+                <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700" role="alert">
                   {queueError}
                 </p>
               )}
 
-              {isQueueLoading ? (
-                <p className="mt-4 text-sm text-[var(--muted-foreground)]">
-                  Warteschlange wird geladen...
-                </p>
-              ) : queueEntries.length === 0 ? (
-                <p className="mt-4 text-sm text-[var(--muted-foreground)]">
-                  Momentan wartet niemand.
-                </p>
-              ) : (
-                <ul className="mt-4 space-y-3">
-                  {queueEntries.map((entry) => (
-                    <li
-                      key={entry.entry_id}
-                      className="flex items-center justify-between gap-4 rounded-2xl bg-[var(--background)] p-4"
+              <div className="mt-5 grid items-start gap-5 lg:grid-cols-3">
+                <section className="min-w-0 rounded-2xl border border-[var(--border)] p-4 sm:p-5 lg:col-span-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-lg font-semibold">Warteschlange</h3>
+                    <span className="text-sm text-[var(--muted-foreground)]">
+                      Aktualisiert automatisch
+                    </span>
+                  </div>
+
+                  {isQueueLoading ? (
+                    <p className="mt-4 text-sm text-[var(--muted-foreground)]">
+                      Warteschlange wird geladen...
+                    </p>
+                  ) : queueEntries.length === 0 ? (
+                    <div className="mt-4 rounded-2xl bg-[var(--background)] p-6 text-center sm:p-8">
+                      <p className="font-semibold">Momentan wartet niemand.</p>
+                      <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                        Neue Check-ins erscheinen automatisch hier.
+                      </p>
+                    </div>
+                  ) : (
+                    <ul className="mt-4 grid gap-3 xl:grid-cols-2">
+                      {queueEntries.map((entry) => (
+                        <li
+                          key={entry.entry_id}
+                          className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-[var(--background)] p-4"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate font-semibold">
+                              #{entry.queue_position} · {entry.customer_name}
+                            </p>
+                            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                              Wartet in der Schlange
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleServe(entry.entry_id)}
+                            disabled={servingEntryId !== null}
+                            className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {servingEntryId === entry.entry_id
+                              ? "Wird bedient..."
+                              : "Bedienen"}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+
+                <aside className="min-w-0 space-y-4 lg:sticky lg:top-8">
+                  <div
+                    className={`rounded-2xl p-5 transition-colors ${
+                      dashboardState.isChairOccupied
+                        ? "bg-primary text-[var(--primary-foreground)]"
+                        : "border border-[var(--border)] bg-[var(--background)] text-foreground"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] opacity-75">
+                      Stuhlstatus
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold">
+                      {dashboardState.isChairOccupied ? "Stuhl besetzt" : "Stuhl frei"}
+                    </p>
+                    <p
+                      className={`mt-2 text-sm ${
+                        dashboardState.isChairOccupied
+                          ? "text-[var(--primary-foreground)] opacity-80"
+                          : "text-[var(--muted-foreground)]"
+                      }`}
                     >
-                      <div>
-                        <p className="font-semibold">
-                          #{entry.queue_position} · {entry.customer_name}
-                        </p>
-                        <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                          Wartet in der Schlange
-                        </p>
-                      </div>
+                      Nutze dies für Kunden, die direkt auf dem Stuhl Platz nehmen.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleChairToggle}
+                      disabled={isUpdatingChair || servingEntryId !== null}
+                      aria-pressed={dashboardState.isChairOccupied}
+                      className={`mt-5 w-full rounded-xl border py-3 text-sm font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 ${
+                        dashboardState.isChairOccupied
+                          ? "border-[var(--card)] bg-[var(--card)] text-primary"
+                          : "border-primary bg-primary text-[var(--primary-foreground)]"
+                      }`}
+                    >
+                      {isUpdatingChair
+                        ? "Status wird gespeichert..."
+                        : dashboardState.isChairOccupied
+                          ? "Stuhl freigeben"
+                          : "Stuhl besetzen"}
+                    </button>
+                  </div>
+
+                  {undoAction && (
+                    <div
+                      className="flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-card p-3 shadow-sm"
+                      role="status"
+                    >
+                      <p className="text-sm text-foreground">{undoAction.message}</p>
                       <button
                         type="button"
-                        onClick={() => handleServe(entry.entry_id)}
-                        disabled={servingEntryId !== null}
-                        className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-[var(--primary-foreground)] hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
+                        onClick={() => void handleUndo()}
+                        disabled={isUndoing}
+                        className="shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-[var(--primary-foreground)] disabled:opacity-60"
                       >
-                        {servingEntryId === entry.entry_id
-                          ? "Wird bedient..."
-                          : "Bedienen"}
+                        {isUndoing ? "Wird rückgängig..." : "Rückgängig"}
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                    </div>
+                  )}
+                </aside>
+              </div>
             </div>
 
             <div className="mt-8 border-t border-[var(--border)] pt-6">
@@ -724,7 +750,8 @@ export default function DashboardPage({
                     ))}
                   </div>
 
-                  <div className="mt-4 rounded-2xl bg-[var(--background)] p-4">
+                  <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
+                  <div className="rounded-2xl bg-[var(--background)] p-5">
                     <div className="flex items-end justify-between gap-3">
                       <div>
                         <h3 className="font-semibold">Digitale Check-ins</h3>
@@ -756,7 +783,7 @@ export default function DashboardPage({
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-2xl bg-[var(--background)] p-4">
+                  <div className="rounded-2xl bg-[var(--background)] p-5">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="font-semibold">Feedback</h3>
                       <p className="text-xl font-semibold">
@@ -808,6 +835,7 @@ export default function DashboardPage({
                       )}
                     </div>
                   </div>
+                  </div>
 
                   <p className="mt-3 text-xs text-[var(--muted-foreground)]">
                     „Bedient“ bedeutet aktuell: im Dashboard als bedient markiert. Auslastung
@@ -818,8 +846,8 @@ export default function DashboardPage({
             </div>
 
             {!requestedSalonSlug && (
-              <>
-                <div className="mt-8 border-t border-[var(--border)] pt-6">
+              <div className="mt-8 grid items-start gap-5 border-t border-[var(--border)] pt-6 lg:grid-cols-2">
+                <div className="rounded-2xl border border-[var(--border)] p-5">
                   <h2 className="text-lg font-semibold">Website-Integration</h2>
                   <p className="mt-2 text-sm text-[var(--muted-foreground)]">
                     Füge diesen Code auf der Website deines Salons ein. Kunden sehen
@@ -840,7 +868,7 @@ export default function DashboardPage({
                 </div>
 
                 {dashboardState.email.toLowerCase() === "info@walkinly.ch" && (
-                  <div className="mt-8 border-t border-[var(--border)] pt-6">
+                  <div className="rounded-2xl border border-[var(--border)] p-5">
                     <h2 className="text-lg font-semibold">WhatsApp-Test</h2>
                     <button type="button" onClick={() => void checkWhatsAppConnection()}
                       disabled={isCheckingWhatsApp}
@@ -922,7 +950,7 @@ export default function DashboardPage({
                     </button>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </>
         )}
@@ -930,7 +958,7 @@ export default function DashboardPage({
         <button
           type="button"
           onClick={handleSignOut}
-          className="mt-8 w-full rounded-2xl border border-[var(--border)] py-3 font-semibold text-foreground hover:opacity-80 transition"
+          className="mt-8 block w-full rounded-2xl border border-[var(--border)] px-6 py-3 font-semibold text-foreground transition hover:opacity-80 sm:ml-auto sm:w-auto"
         >
           Abmelden
         </button>
