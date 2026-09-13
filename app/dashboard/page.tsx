@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { CSSProperties } from "react";
+import type { CSSProperties, FormEvent } from "react";
 
 import SalonBrand from "@/components/customer/SalonBrand";
 import type { SalonBranding } from "@/lib/salon-branding";
@@ -83,6 +83,9 @@ export default function DashboardPage({
   const [queueEntries, setQueueEntries] = useState<QueueEntry[]>([]);
   const [queueError, setQueueError] = useState<string | null>(null);
   const [isQueueLoading, setIsQueueLoading] = useState(false);
+  const [newCustomerName, setNewCustomerName] = useState("");
+  const [isAddingQueueEntry, setIsAddingQueueEntry] = useState(false);
+  const [queueActionEntryId, setQueueActionEntryId] = useState<string | null>(null);
   const [servingEntryId, setServingEntryId] = useState<string | null>(null);
   const [isUpdatingChair, setIsUpdatingChair] = useState(false);
   const [undoAction, setUndoAction] = useState<UndoAction | null>(null);
@@ -288,6 +291,69 @@ export default function DashboardPage({
         ? { id: actionId, message: "Kunde wurde als bedient markiert." }
         : null,
     );
+    await loadQueue(dashboardState.salonId);
+  }
+
+  async function handleAddQueueEntry(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (dashboardState.status !== "ready" || !newCustomerName.trim()) return;
+
+    setIsAddingQueueEntry(true);
+    setQueueError(null);
+    const { error } = await supabase.rpc("add_staff_queue_entry", {
+      p_salon_id: dashboardState.salonId,
+      p_customer_name: newCustomerName.trim(),
+    });
+    setIsAddingQueueEntry(false);
+
+    if (error) {
+      setQueueError("Die Person konnte nicht hinzugefügt werden.");
+      return;
+    }
+
+    setNewCustomerName("");
+    await loadQueue(dashboardState.salonId);
+    void loadStatistics(dashboardState.salonId, statisticsPeriod);
+  }
+
+  async function handleRemoveQueueEntry(entry: QueueEntry) {
+    if (
+      dashboardState.status !== "ready" ||
+      !window.confirm(`${entry.customer_name} wirklich aus der Warteschlange entfernen?`)
+    ) return;
+
+    setQueueActionEntryId(entry.entry_id);
+    setQueueError(null);
+    const { error } = await supabase.rpc("remove_staff_queue_entry", {
+      p_entry_id: entry.entry_id,
+    });
+    setQueueActionEntryId(null);
+
+    if (error) {
+      setQueueError("Die Person konnte nicht entfernt werden.");
+      return;
+    }
+
+    await loadQueue(dashboardState.salonId);
+    void loadStatistics(dashboardState.salonId, statisticsPeriod);
+  }
+
+  async function handleMoveQueueEntry(entryId: string, direction: -1 | 1) {
+    if (dashboardState.status !== "ready") return;
+
+    setQueueActionEntryId(entryId);
+    setQueueError(null);
+    const { error } = await supabase.rpc("move_staff_queue_entry", {
+      p_entry_id: entryId,
+      p_direction: direction,
+    });
+    setQueueActionEntryId(null);
+
+    if (error) {
+      setQueueError("Die Position konnte nicht geändert werden.");
+      return;
+    }
+
     await loadQueue(dashboardState.salonId);
   }
 
@@ -600,6 +666,31 @@ export default function DashboardPage({
                     </span>
                   </div>
 
+                  <form
+                    onSubmit={(event) => void handleAddQueueEntry(event)}
+                    className="mt-4 flex flex-col gap-2 rounded-2xl bg-[var(--background)] p-3 sm:flex-row"
+                  >
+                    <label className="sr-only" htmlFor="dashboard-customer-name">
+                      Name der wartenden Person
+                    </label>
+                    <input
+                      id="dashboard-customer-name"
+                      value={newCustomerName}
+                      onChange={(event) => setNewCustomerName(event.target.value)}
+                      maxLength={80}
+                      placeholder="Person manuell hinzufügen"
+                      disabled={isAddingQueueEntry}
+                      className="min-h-11 min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-card px-3 text-foreground outline-none placeholder:text-[var(--muted-foreground)] focus:border-primary"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isAddingQueueEntry || !newCustomerName.trim()}
+                      className="min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-[var(--primary-foreground)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isAddingQueueEntry ? "Wird hinzugefügt..." : "Hinzufügen"}
+                    </button>
+                  </form>
+
                   {isQueueLoading ? (
                     <p className="mt-4 text-sm text-[var(--muted-foreground)]">
                       Warteschlange wird geladen...
@@ -616,7 +707,7 @@ export default function DashboardPage({
                       {queueEntries.map((entry) => (
                         <li
                           key={entry.entry_id}
-                          className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-[var(--background)] p-4"
+                          className="flex min-w-0 flex-col gap-3 rounded-2xl bg-[var(--background)] p-4 sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="min-w-0">
                             <p className="truncate font-semibold">
@@ -626,16 +717,46 @@ export default function DashboardPage({
                               Wartet in der Schlange
                             </p>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => handleServe(entry.entry_id)}
-                            disabled={servingEntryId !== null}
-                            className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {servingEntryId === entry.entry_id
-                              ? "Wird bedient..."
-                              : "Bedienen"}
-                          </button>
+                          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                            <div className="flex rounded-lg border border-[var(--border)] bg-card p-0.5">
+                              <button
+                                type="button"
+                                onClick={() => void handleMoveQueueEntry(entry.entry_id, -1)}
+                                disabled={entry.queue_position === 1 || queueActionEntryId !== null}
+                                aria-label={`${entry.customer_name} nach oben verschieben`}
+                                className="h-9 w-9 rounded-md text-lg font-semibold disabled:cursor-not-allowed disabled:opacity-30"
+                              >
+                                ↑
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => void handleMoveQueueEntry(entry.entry_id, 1)}
+                                disabled={entry.queue_position === queueEntries.length || queueActionEntryId !== null}
+                                aria-label={`${entry.customer_name} nach unten verschieben`}
+                                className="h-9 w-9 rounded-md text-lg font-semibold disabled:cursor-not-allowed disabled:opacity-30"
+                              >
+                                ↓
+                              </button>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => void handleRemoveQueueEntry(entry)}
+                              disabled={queueActionEntryId !== null || servingEntryId !== null}
+                              className="min-h-10 rounded-xl border border-red-300 px-3 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              Entfernen
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleServe(entry.entry_id)}
+                              disabled={servingEntryId !== null || queueActionEntryId !== null}
+                              className="min-h-10 flex-1 rounded-xl bg-primary px-4 text-sm font-semibold text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                            >
+                              {servingEntryId === entry.entry_id
+                                ? "Wird bedient..."
+                                : "Bedienen"}
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
