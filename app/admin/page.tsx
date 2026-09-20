@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 
 import { supabase } from "@/lib/supabase";
+import PrivacyLink from "@/components/legal/PrivacyLink";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -76,6 +77,11 @@ export default function AdminLoginPage() {
                 {errorMessage}
               </p>
             )}
+
+            <p className="mt-4 text-sm text-zinc-600">
+              Wir verwenden deine E-Mail-Adresse zum Versand des Login-Links und
+              zur Verwaltung deines Salonzugangs. <PrivacyLink section="browser" />.
+            </p>
 
             <button
               type="submit"

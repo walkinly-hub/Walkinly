@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { supabase } from "@/lib/supabase";
 import SalonBrand from "./SalonBrand";
+import PrivacyLink from "@/components/legal/PrivacyLink";
 
 export type CheckInResult = {
   entryId: string;
@@ -47,7 +48,7 @@ export default function CheckInForm({
     const customerName = name.trim();
 
     if (!customerName) {
-      setErrorMessage("Bitte gib deinen Vornamen ein.");
+      setErrorMessage("Bitte gib einen Namen ein, mit dem wir dich aufrufen dürfen.");
       return;
     }
 
@@ -100,12 +101,14 @@ export default function CheckInForm({
           Jetzt einchecken
         </h1>
 
-        <p className="mt-3 text-[var(--muted-foreground)]">
-          Gib deinen Vornamen ein – oder einfach den Namen, mit dem wir dich ansprechen dürfen.
+        <p id="checkin-name-help" className="mt-3 text-[var(--muted-foreground)]">
+          Wie dürfen wir dich aufrufen? Du kannst einen beliebigen Namen oder Spitznamen wählen. Dein echter Name ist nicht erforderlich.
         </p>
 
         <input
           type="text"
+          aria-label="Name für den Aufruf"
+          aria-describedby="checkin-name-help"
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Name"
@@ -132,8 +135,13 @@ export default function CheckInForm({
                 disabled={isSubmitting}
                 className="mt-0.5 h-4 w-4 accent-[var(--primary)]"
               />
-              <span>Ich möchte per WhatsApp benachrichtigt werden.</span>
+              <span>Ich möchte für diesen Besuch einmal von Walkinly für {salonName} per WhatsApp benachrichtigt werden, sobald ich als Nächstes an der Reihe bin.</span>
             </label>
+
+            <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+              Dafür werden deine Mobilnummer, dein gewählter Aufrufname und der Salonname an WhatsApp/Meta übermittelt.
+              Die Auswahl ist freiwillig und umfasst keine Werbung. <PrivacyLink section="whatsapp">Datenschutz und Widerruf</PrivacyLink>.
+            </p>
 
             {wantsWhatsAppNotification && (
               <label className="mt-4 block text-sm font-medium text-foreground">
@@ -159,6 +167,12 @@ export default function CheckInForm({
             {errorMessage}
           </p>
         )}
+
+        <p className="mt-5 text-sm text-[var(--muted-foreground)]">
+          Für deine Warteschlange verarbeitet {salonName} deinen frei gewählten Aufrufnamen
+          und Angaben zu deinem Besuch mit Walkinly. Mehr zu Datenverwendung,
+          Speicherdauer und deinen Rechten: <PrivacyLink />.
+        </p>
 
         <button
           type="submit"

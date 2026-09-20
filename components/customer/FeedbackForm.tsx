@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { supabase } from "@/lib/supabase";
+import PrivacyLink from "@/components/legal/PrivacyLink";
 
 const ratings = ["Sehr unzufrieden", "Unzufrieden", "Okay", "Zufrieden", "Sehr zufrieden"];
 
@@ -82,7 +83,7 @@ export default function FeedbackForm({ salonSlug }: { salonSlug: string }) {
           className="mt-2 w-full resize-y rounded-xl border border-[var(--border)] bg-background p-3 text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" />
         <p id="feedback-length" className="mt-1 text-right text-xs text-[var(--muted-foreground)]">{comment.length}/2000 Zeichen</p>
       </div>
-      <p id="feedback-privacy" className="text-sm text-[var(--muted-foreground)]">Wir fragen weder Name noch Kontaktdaten ab. Dein Feedback wird intern für den Salon gespeichert und nicht öffentlich angezeigt. Bitte erwähne keine persönlichen Daten im Kommentar.</p>
+      <p id="feedback-privacy" className="text-sm text-[var(--muted-foreground)]">Wir fragen weder Name noch Kontaktdaten ab. Deine Bewertung und dein optionaler Kommentar werden mit Salon und Zeitpunkt intern gespeichert und nicht öffentlich angezeigt. Bitte erwähne keine persönlichen Daten im Kommentar. <PrivacyLink section="feedback" />.</p>
       {error && <p role="alert" className="rounded-xl border border-[var(--border)] p-3 text-sm text-foreground">{error}</p>}
       <button type="submit" disabled={isSubmitting} className="min-h-12 w-full rounded-xl bg-primary px-4 py-3 font-semibold text-[var(--primary-foreground)] hover:bg-[var(--primary-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-60">
         {isSubmitting ? "Wird gesendet …" : "Feedback senden"}
