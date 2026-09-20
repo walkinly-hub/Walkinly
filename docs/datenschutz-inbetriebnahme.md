@@ -16,18 +16,44 @@ Die Seiten sind wegen offener Angaben vorläufig mit `noindex` versehen. Das ist
 keine Zugriffssperre: Die Routen sind nach Deployment öffentlich erreichbar.
 Die Datenschutzerklärung kennzeichnet ihre offenen Angaben ausdrücklich.
 
+## Bestätigungen aus der gemeinsamen Klärung
+
+- Noch kein Salon nutzt Walkinly mit echten Kunden (Angabe des Betreibers).
+- `info@walkinly.ch` ist eingerichtet und wird vom Betreiber regelmässig gelesen.
+  Die Abläufe für Datenschutzanfragen und WhatsApp-Widerrufe sind noch zu klären.
+- Der Screenshot aus Supabase zeigt die primäre Datenbank in **West EU (Ireland)**,
+  **`eu-west-1`**. Weitere Bearbeitungsorte, Support und Unterauftragnehmer sind
+  damit noch nicht bestätigt.
+- Der Betreiber bestätigt **Vercel Hobby** und belässt den Tarif vorerst so.
+  Es wurde kein Upgrade beauftragt oder vorgenommen. Die Zulässigkeit der Nutzung
+  unter diesem Tarif und die Vertragsdeckung zur Auftragsverarbeitung bleiben
+  offen; die Entscheidung ist keine Bestätigung der Vertragskonformität.
+  Diese Tarifangabe gehört zur internen Prüfung, nicht in die öffentliche
+  Datenschutzerklärung. Grundlage der bisherigen Prüfung:
+  [Vercel Hobby](https://vercel.com/docs/plans/hobby),
+  [Nutzungsrichtlinien](https://vercel.com/docs/limits/fair-use-guidelines) und
+  [DPA](https://vercel.com/legal/dpa).
+- Supabase wird nach Angabe des Betreibers ebenfalls kostenlos genutzt. Die
+  Vertragsdeckung zur Auftragsbearbeitung ist noch nicht geprüft.
+- Als Nächstes gemeinsam klären: vorhandene Supabase-Vereinbarung zur
+  Auftragsbearbeitung (DPA).
+
 ## Angaben vor einer vollständigen Veröffentlichung ergänzen
 
 1. Erledigt: Postadresse von Mino Klamer in beiden Rechtsseiten eingetragen
    (Felsenstrasse 6, 5400 Baden, Schweiz).
-2. Rechtlichen Betreiber, Adresse und Datenschutzkontakt jedes Salons ergänzen;
-   der angezeigte Salon-Markenname allein reicht dafür nicht sicher aus.
-3. `info@walkinly.ch` ist die bereits im Projekt verwendete Kontaktadresse.
-   Sicherstellen, dass Datenschutzanfragen und WhatsApp-Widerrufe dort bearbeitet
-   werden. Der Webhook verarbeitet keine STOP-Nachrichten. Ein automatischer
+2. Beim Einrichten eines Salons dessen rechtlichen Betreiber und Kontakt für
+   die jeweiligen Kunden zugänglich machen, etwa über einen klaren Link im
+   Salon-Check-in. Keine zentrale öffentliche Liste aller Salons erforderlich.
+   Die bisherige pauschale Platzhalterformulierung in der Erklärung entsprechend
+   anpassen, sobald diese Zuordnung umgesetzt ist.
+3. `info@walkinly.ch` ist als betreute Kontaktadresse bestätigt.
+   Die Bearbeitung von Datenschutzanfragen und WhatsApp-Widerrufen noch festlegen.
+   Der Webhook verarbeitet keine STOP-Nachrichten. Ein automatischer
    Widerruf unter Beibehaltung des Warteschlangenplatzes wurde nicht hinzugefügt.
    Abmeldung muss auch bei direkt an WhatsApp gerichteten Anfragen beachtet werden.
-4. Supabase-Vertragsgesellschaft und Projektregion, Vercel-Bearbeitungsorte,
+4. Die bestätigte primäre Supabase-Region Irland (`eu-west-1`) in die Erklärung
+   übernehmen. Supabase-Vertragsgesellschaft, weitere Bearbeitungsorte, Vercel-Bearbeitungsorte,
    WhatsApp-Vertragsgesellschaft, alle relevanten Empfängerstaaten und tatsächlich
    geltenden Transfergarantien prüfen und konkret eintragen. Nicht einfach
    "EU" oder "weltweit" einsetzen. Region, Logs, Support und Unterauftragnehmer
