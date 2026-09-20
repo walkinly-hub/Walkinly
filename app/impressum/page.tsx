@@ -14,8 +14,8 @@ export default function ImpressumPage() {
         <address className="not-italic">
           Mino Klamer · Einzelunternehmen<br />
           Walkinly<br />
-          [Strasse und Hausnummer ergänzen]<br />
-          [Postleitzahl und Ort ergänzen]<br />
+          Felsenstrasse 6<br />
+          5400 Baden<br />
           Schweiz
         </address>
         <p>E-Mail: <a href="mailto:info@walkinly.ch">info@walkinly.ch</a></p>

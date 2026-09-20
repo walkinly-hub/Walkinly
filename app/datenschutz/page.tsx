@@ -11,13 +11,13 @@ export default function DatenschutzPage() {
   return (
     <LegalPage title="Datenschutzerklärung">
       <p className="rounded-xl border border-border bg-card p-4 text-sm">
-        Fassung mit offenen Angaben: Die Postadresse sowie einzelne Angaben zu
+        Fassung mit offenen Angaben: Einzelne Angaben zu den Salons,
         Dienstleistern, Bearbeitungsorten und Aufbewahrungsfristen müssen noch ergänzt werden.
       </p>
       <section id="verantwortliche">
         <h2>1. Verantwortliche und Kontakt</h2>
         <p>Walkinly wird vom Einzelunternehmen Mino Klamer betrieben.
-          Adresse: [Strasse, Hausnummer, Postleitzahl und Ort ergänzen], Schweiz.
+          Adresse: Felsenstrasse 6, 5400 Baden, Schweiz.
           Kontakt für Datenschutzanliegen: <a href="mailto:info@walkinly.ch">info@walkinly.ch</a>.</p>
         <p>Für die Organisation deines Besuchs und die Auswertung deines Feedbacks ist
           der von dir ausgewählte Salon verantwortlich. Walkinly stellt dafür die

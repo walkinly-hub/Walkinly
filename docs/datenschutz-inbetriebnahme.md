@@ -4,7 +4,7 @@
 
 - `/datenschutz`: Informationen zu frei gewähltem Aufrufnamen, Warteschlange,
   WhatsApp, Feedback, Browserspeicher, Personal-Login, Dienstleistern und Rechten.
-- `/impressum`: Einzelunternehmen Mino Klamer, Adresse als vereinbarter Platzhalter.
+- `/impressum`: Einzelunternehmen Mino Klamer, Felsenstrasse 6, 5400 Baden, Schweiz.
 - Direkte Links vor dem Absenden von Check-in, Feedback und Login; zusätzlicher
   globaler Footer auch auf Status-, Abschluss- und Widgetseiten. Neue Tabs
   verhindern den Verlust von Formulareingaben und das Öffnen im kleinen Iframe.
@@ -18,7 +18,8 @@ Die Datenschutzerklärung kennzeichnet ihre offenen Angaben ausdrücklich.
 
 ## Angaben vor einer vollständigen Veröffentlichung ergänzen
 
-1. Postadresse von Mino Klamer in beiden Rechtsseiten eintragen.
+1. Erledigt: Postadresse von Mino Klamer in beiden Rechtsseiten eingetragen
+   (Felsenstrasse 6, 5400 Baden, Schweiz).
 2. Rechtlichen Betreiber, Adresse und Datenschutzkontakt jedes Salons ergänzen;
    der angezeigte Salon-Markenname allein reicht dafür nicht sicher aus.
 3. `info@walkinly.ch` ist die bereits im Projekt verwendete Kontaktadresse.
