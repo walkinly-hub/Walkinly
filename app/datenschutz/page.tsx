@@ -111,13 +111,19 @@ export default function DatenschutzPage() {
           </p>
         <p>Die Walkinly-Anwendung wird bei Vercel Inc., USA, betrieben. Vercel
           verarbeitet die für Auslieferung, Betrieb und Absicherung der Anwendung
-          erforderlichen Verbindungs- und Nutzungsdaten. Informationen des Anbieters:
+          erforderlichen Verbindungs- und Nutzungsdaten. Für die serverseitigen
+          Funktionen ist im Projekt die Region Washington, D.C., USA (iad1),
+          eingestellt. Informationen des Anbieters:
           <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel Datenschutz (neuer Tab)</a>.
           [Tatsächliche Bearbeitungsstaaten, einschliesslich Unterauftragnehmer,
           entsprechend der Projektkonfiguration ergänzen.]</p>
         <p>Für die Datenbank und die Anmeldung verwenden wir Supabase.
-          [Vertragsgesellschaft, gewählte Datenbankregion und tatsächliche
-          Bearbeitungsstaaten einschliesslich Unterauftragnehmer ergänzen.]</p>
+          Unsere primäre Datenbank liegt in Irland (Region eu-west-1).
+          Dieser Standort bedeutet nicht, dass sämtliche Bearbeitungen durch
+          Supabase, etwa für Support und den technischen Betrieb, ausschliesslich
+          in Irland stattfinden.
+          [Vertragsgesellschaft und weitere Bearbeitungsstaaten einschliesslich
+          Unterauftragnehmer ergänzen.]</p>
         <p>Für die freiwilligen Erinnerungen verwenden wir WhatsApp/Meta.
           [Vertragsgesellschaft und tatsächliche Bearbeitungsstaaten ergänzen.]
           Die Nutzung eines Schweizer Domainanbieters bedeutet daher nicht,

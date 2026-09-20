@@ -35,8 +35,13 @@ Die Datenschutzerklärung kennzeichnet ihre offenen Angaben ausdrücklich.
   [DPA](https://vercel.com/legal/dpa).
 - Supabase wird nach Angabe des Betreibers ebenfalls kostenlos genutzt. Die
   Vertragsdeckung zur Auftragsbearbeitung ist noch nicht geprüft.
-- Als Nächstes gemeinsam klären: vorhandene Supabase-Vereinbarung zur
-  Auftragsbearbeitung (DPA).
+- Der Betreiber hat das Supabase-Konto selbst für Walkinly angelegt. Die aktuell
+  veröffentlichten Nutzungsbedingungen beziehen das DPA in Abschnitt 7(b) ein;
+  eine separate Unterschrift ist daher nicht pauschal vorauszusetzen. Welche
+  Vertragsfassung für dieses Konto gilt, ist noch nicht anhand der Kontounterlagen
+  bestätigt.
+- Weitere Antworten, zurückgestellte Entscheidungen und Ergebnisse der
+  Anbieterrecherche: [Datenschutz-Klärungsstand](datenschutz-klaerung.md).
 
 ## Angaben vor einer vollständigen Veröffentlichung ergänzen
 
@@ -52,8 +57,8 @@ Die Datenschutzerklärung kennzeichnet ihre offenen Angaben ausdrücklich.
    Der Webhook verarbeitet keine STOP-Nachrichten. Ein automatischer
    Widerruf unter Beibehaltung des Warteschlangenplatzes wurde nicht hinzugefügt.
    Abmeldung muss auch bei direkt an WhatsApp gerichteten Anfragen beachtet werden.
-4. Die bestätigte primäre Supabase-Region Irland (`eu-west-1`) in die Erklärung
-   übernehmen. Supabase-Vertragsgesellschaft, weitere Bearbeitungsorte, Vercel-Bearbeitungsorte,
+4. Erledigt: Die bestätigte primäre Supabase-Region Irland (`eu-west-1`) ist in
+   der Erklärung eingetragen. Supabase-Vertragsgesellschaft, weitere Bearbeitungsorte, Vercel-Bearbeitungsorte,
    WhatsApp-Vertragsgesellschaft, alle relevanten Empfängerstaaten und tatsächlich
    geltenden Transfergarantien prüfen und konkret eintragen. Nicht einfach
    "EU" oder "weltweit" einsetzen. Region, Logs, Support und Unterauftragnehmer
@@ -123,6 +128,6 @@ Am 20.09.2026 geprüft:
 - [Supabase DPA](https://supabase.com/downloads/docs/Supabase%2BDPA%2B260317.pdf)
 
 Keine automatische Behauptung, dass diese Anbieterunterlagen in den konkreten
-Kundenkonten vereinbart wurden. AGB für Software-Abonnements benötigen separate
-Angaben zu Leistungen, Preisen, Laufzeit und Kündigung und sind nicht Teil dieses
-Datenschutzauftrags.
+Kundenkonten vereinbart wurden. Die inzwischen besprochenen Eckpunkte eines
+Salonvertrags sind separat im Klärungsstand festgehalten. Sie sind noch kein
+fertiger oder veröffentlichter Vertrag.
