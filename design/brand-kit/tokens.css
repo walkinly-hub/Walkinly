@@ -1,0 +1,14 @@
+/* Brand-kit proposal; not imported by the application. */
+:root {
+  --walkinly-pink: #ec4899;
+  --walkinly-pink-dark: #db2777;
+  --walkinly-blush: #fce7f3;
+  --walkinly-background: #f8f7f4;
+  --walkinly-white: #ffffff;
+  --walkinly-ink: #1d1d1f;
+  --walkinly-border: #e7e5e4;
+  --walkinly-font: Geist, Arial, sans-serif;
+  --walkinly-space: 8px;
+  --walkinly-radius-card: 24px;
+  --walkinly-radius-button: 16px;
+}
