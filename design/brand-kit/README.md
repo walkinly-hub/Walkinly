@@ -1,6 +1,6 @@
 # Walkinly Brand-Kit
 
-Version 1 · 25. September 2026
+Version 2 · 27. September 2026
 
 ## Grundlage
 
@@ -14,17 +14,18 @@ Freundlich, unkompliziert, nahbar und klar. Die runden Buchstaben vermitteln Off
 
 ## Farben
 
-| Farbe | HEX | Einsatz |
-| --- | --- | --- |
-| Walkinly Pink | #EC4899 | Marke, Akzente, dekorative Flächen |
-| Pink dunkel | #DB2777 | Aktionsflächen mit weisser Beschriftung |
-| Blush | #FCE7F3 | Dezente Hintergründe |
-| Warmweiss | #F8F7F4 | Seitenhintergrund |
-| Weiss | #FFFFFF | Karten, Logo-Flächen |
-| Ink | #1D1D1F | Text |
-| Stone | #E7E5E4 | Dekorative Trennlinien |
+| Rolle | Farbe | HEX | Einsatz |
+| --- | --- | --- | --- |
+| Primär | Walkinly Pink | #EC4899 | Markenauftritt und zentrale Akzente |
+| Sekundär 1 | Mahagoni | #420D09 | Überschriften und dunkle Kontrastflächen |
+| Sekundär 2 | Babyblau | #89CFF0 | Ergänzende Flächen und grafische Elemente |
+| Akzent 1 | Blush | #FCE7F3 | Sehr sanfte rosa Flächen |
+| Akzent 2 | Ice Blue | #E7F5FC | Sehr sanfte blaue Flächen |
 
-Pink, Pink dunkel, Warmweiss, Weiss, Ink und Stone stammen aus der bestehenden App; Blush ergänzt die Palette. Die HEX-Werte sind verbindliche Gestaltungswerte, keine Behauptung, dass jeder Pixel des generierten Logos exakt diesen Farbwert besitzt. Das Original enthält leichte Farbvariation.
+Mahagoni entspricht dem HEX-Wert der Vorlage, Babyblau wurde direkt aus der blauen Bildfläche ausgelesen. Ice Blue ist eine Aufhellung von Babyblau mit rund 80 % Weiss: ähnlich zart wie Blush, bei erhaltener blauer Farbrichtung.
+
+Neutrale Funktionsfarben: Warmweiss #F8F7F4, Weiss #FFFFFF, Ink #1D1D1F und Stone #E7E5E4. Pink dunkel #DB2777 bleibt ausschliesslich eine funktionale Buttonfarbe und zählt nicht als zusätzliche Markenfarbe.
+Die HEX-Werte sind verbindliche Gestaltungswerte, keine Behauptung, dass jeder Pixel des generierten Logos exakt diesen Farbwert besitzt. Das Original enthält leichte Farbvariation.
 
 Für kleinen Text Ink auf Weiss verwenden. Weisse Buttontexte auf Pink dunkel setzen; das hellere Markenpink nicht als Standardfläche für kleine weisse Schrift verwenden. Statusinformationen immer zusätzlich mit Text oder Symbol erklären.
 
