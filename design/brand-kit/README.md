@@ -1,10 +1,10 @@
 # Walkinly Brand-Kit
 
-Version 2 · 27. September 2026
+Version 3 · 27. September 2026
 
 ## Grundlage
 
-Die ausdrücklich ausgewählte Logo-Version ist unverändert unter `assets/walkinly-logo-original.png` enthalten. Die ursprünglichen Bögen von k und y bleiben erhalten. Das PNG hat einen weissen Hintergrund und ist kein transparentes oder skalierbares Vektorlogo. Keine neue Schrift ersetzt den Logo-Schriftzug.
+Für alle Anwendungen gilt die freigestellte Datei `assets/walkinly-logo-transparent.png`. Sie wurde mit Imagegen aus der ausgewählten Vorlage abgeleitet (Auftrag: nur weissen Hintergrund entfernen, Buchstaben und Bögen bewahren). Das unveränderte Original bleibt ausschliesslich als Referenz archiviert; die generierte Freistellung ist keine pixelidentische Kopie. Beide Dateien sind Rasterbilder, keine Vektoren.
 
 `index.html` ist die lokale, druckbare Markenübersicht. Im Browser öffnen; über Drucken lässt sie sich auch als PDF speichern. `tokens.css` enthält die vorgeschlagenen Gestaltungswerte, wird aber nicht automatisch in die App eingebunden.
 
@@ -40,15 +40,15 @@ Geist ist die bestehende App-Schrift: 600–700 für Überschriften, 400–500 f
 
 ## Logo-Regeln
 
-Nur die beigefügte Originaldatei verwenden. Seitenverhältnis erhalten; nicht verzerren, nachzeichnen, umfärben oder die Buchstaben neu setzen. Keine zusätzlichen Schatten, Konturen oder Effekte. Auf einer ruhigen weissen Fläche platzieren. Die im PNG vorhandenen weissen Ränder beibehalten.
+Das Logo immer freigestellt auf dem jeweiligen Hintergrund darstellen: kein weisses Rechteck, kein eigener Hintergrund am Bild oder Logo-Container. Nur die transparente PNG für Anwendungen verwenden. Seitenverhältnis erhalten, keine Effekte oder Verzerrung. Ruhige kontrastreiche Flächen wählen, beispielsweise Warmweiss, Blush oder Ice Blue.
 
 Als zusätzlicher Schutzraum mindestens die Höhe des i-Punkts um die sichtbare Wortmarke einplanen. Empfohlene sichtbare Wortmarkenbreite mindestens 160 px; kleinere Darstellungen am tatsächlichen Ausgabegerät prüfen. Für Favicons ist die vollständige Wortmarke zu lang; ein separates Zeichen ist noch nicht freigegeben.
 
-Das Original ist 1774 × 887 px. Wegen der weissen Ränder ist die sichtbare Wortmarke kleiner als die Bildfläche. Für grosse Drucksachen und transparente Anwendungen wird eine separat geprüfte Vektorreinzeichnung benötigt. Dieses Kit enthält keine vermeintlich fertige SVG-Datei.
+Das Original ist 1774 × 887 px. Wegen der weissen Ränder ist die sichtbare Wortmarke kleiner als die Bildfläche. Für grosse Drucksachen wird eine separat geprüfte Vektorreinzeichnung benötigt. Dieses Kit enthält keine vermeintlich fertige SVG-Datei.
 
 ## Gestaltung
 
-Abstände auf einem 8-px-Raster. Kartenradius 24 px, Buttonradius 16 px. Klare Hierarchie, wenige Akzente, ruhige weisse und warmweisse Flächen. Runde Bögen können als abstrakte Hintergrundformen eingesetzt werden; das Logo selbst bleibt unverändert.
+Website-Elemente sind verbindlich weich abgerundet, passend zur Logo-Schrift. Karten und Dialoge: 24 px; Buttons, Eingabefelder, Auswahlfelder und Bildflächen: 16 px; Chips und Badges: 999 px. Keine scharfkantigen Boxen. Abstände auf einem 8-px-Raster. Klare Hierarchie, wenige Akzente, ruhige weisse und warmweisse Flächen. Runde Bögen können als abstrakte Hintergrundformen eingesetzt werden; das Logo selbst bleibt unverändert.
 
 ## Sprache
 
@@ -60,4 +60,4 @@ Die Übersicht enthält ein Beispiel für eine Salon-Karte, einen Social-Media-B
 
 ## Vor Produktion
 
-Für Druck Farbproof beim Druckdienstleister prüfen. Für Vektor-, transparente und monochrome Logo-Ausgaben sowie ein App-Icon ist eine eigene Reinzeichnung erforderlich. Es sind keine Supabase-Schritte nötig.
+Für Druck Farbproof beim Druckdienstleister prüfen. Für Vektor- und monochrome Logo-Ausgaben sowie ein App-Icon ist eine eigene Reinzeichnung erforderlich. Es sind keine Supabase-Schritte nötig.

@@ -14,4 +14,8 @@
   --walkinly-space: 8px;
   --walkinly-radius-card: 24px;
   --walkinly-radius-button: 16px;
+  --walkinly-radius-input: 16px;
+  --walkinly-radius-image: 16px;
+  --walkinly-radius-dialog: 24px;
+  --walkinly-radius-pill: 999px;
 }
