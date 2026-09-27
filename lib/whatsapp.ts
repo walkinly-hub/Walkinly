@@ -124,17 +124,24 @@ export async function sendWhatsAppReminder({ recipientPhone, customerName, salon
         to: recipientPhone.replace(/\D/g, ""),
         type: "template",
         template: {
-          name: "erinnerungsnachricht",
+          name: "warteschlange_naechster_kunde",
           language: {
             code: "de_CH",
           },
-          components: [{
-            type: "body",
-            parameters: [
-              { type: "text", text: customerName.replace(/\s+/g, " ").trim().slice(0, 80) },
-              { type: "text", text: salonName.replace(/\s+/g, " ").trim().slice(0, 200) },
-            ],
-          }],
+          components: [
+            {
+              type: "header",
+              parameters: [
+                { type: "text", text: salonName.replace(/\s+/g, " ").trim().slice(0, 200) },
+              ],
+            },
+            {
+              type: "body",
+              parameters: [
+                { type: "text", text: customerName.replace(/\s+/g, " ").trim().slice(0, 80) },
+              ],
+            },
+          ],
         },
       }),
       signal: AbortSignal.timeout(timeoutMs),

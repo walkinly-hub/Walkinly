@@ -1044,7 +1044,7 @@ export default function DashboardPage({
                       {registrationStatus && <p role="status" className="mt-3 text-sm">{registrationStatus}</p>}
                     </details>
                     <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                      Sendet die aktive Vorlage „erinnerungsnachricht“ auf Deutsch (Schweiz)
+                      Sendet die aktive Vorlage „warteschlange_naechster_kunde“ auf Deutsch (Schweiz)
                       mit den Beispielwerten „Anna“ und „Salon Beispiel“. Verwende nur deine
                       eigene private WhatsApp-Nummer als Testempfänger. Dies ist ein manueller
                       Test, keine automatische Warteschlangen-Benachrichtigung.
