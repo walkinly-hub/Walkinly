@@ -1,6 +1,6 @@
 # Walkinly Brand-Kit
 
-Version 3 · 27. September 2026
+Version 4 · 29. September 2026
 
 ## Grundlage
 
@@ -16,18 +16,26 @@ Freundlich, unkompliziert, nahbar und klar. Die runden Buchstaben vermitteln Off
 
 | Rolle | Farbe | HEX | Einsatz |
 | --- | --- | --- | --- |
-| Primär | Walkinly Pink | #EC4899 | Markenauftritt und zentrale Akzente |
-| Sekundär 1 | Mahagoni | #420D09 | Überschriften und dunkle Kontrastflächen |
-| Sekundär 2 | Babyblau | #89CFF0 | Ergänzende Flächen und grafische Elemente |
-| Akzent 1 | Blush | #FCE7F3 | Sehr sanfte rosa Flächen |
-| Akzent 2 | Ice Blue | #E7F5FC | Sehr sanfte blaue Flächen |
+| Primär | Walkinly Pink | #EC4899 | Logo und gezielte Hervorhebungen, z. B. primäre CTAs |
+| Sekundär 1 | Mahagoni | #420D09 | Standard für Text, Navigation, Buttons und dunkle Elemente |
+| Sekundär 2 | Babyblau | #89CFF0 | Standard für Karten, Flächen und weitere Website-Elemente |
+| Akzent 1 | Blush | #FCE7F3 | Gezielte sanfte rosa Akzente |
+| Akzent 2 | Ice Blue | #E7F5FC | Gezielte sanfte blaue Akzente |
 
 Mahagoni entspricht dem HEX-Wert der Vorlage, Babyblau wurde direkt aus der blauen Bildfläche ausgelesen. Ice Blue ist eine Aufhellung von Babyblau mit rund 80 % Weiss: ähnlich zart wie Blush, bei erhaltener blauer Farbrichtung.
 
 Neutrale Funktionsfarben: Warmweiss #F8F7F4, Weiss #FFFFFF, Ink #1D1D1F und Stone #E7E5E4. Pink dunkel #DB2777 bleibt ausschliesslich eine funktionale Buttonfarbe und zählt nicht als zusätzliche Markenfarbe.
 Die HEX-Werte sind verbindliche Gestaltungswerte, keine Behauptung, dass jeder Pixel des generierten Logos exakt diesen Farbwert besitzt. Das Original enthält leichte Farbvariation.
 
-Für kleinen Text Ink auf Weiss verwenden. Weisse Buttontexte auf Pink dunkel setzen; das hellere Markenpink nicht als Standardfläche für kleine weisse Schrift verwenden. Statusinformationen immer zusätzlich mit Text oder Symbol erklären.
+Für kleinen Text Mahagoni auf hellen Flächen verwenden. Pinke CTAs erhalten dunkle Mahagoni-Schrift; weisse Schrift ist der dunkleren Pink-Variante vorbehalten. Statusinformationen immer zusätzlich mit Text oder Symbol erklären.
+
+## Verbindliche Farbverteilung
+
+- Mahagoni und Babyblau bilden grundsätzlich die Website-Elemente: Navigation, Karten, Buttons, Icons, Konturen und strukturierende Flächen. Mahagoni ist die dunkle, Babyblau die helle Variante.
+- Blush und Ice Blue ausschliesslich gezielt als Akzente einsetzen, etwa für kleine Hinweisflächen, Labels und dekorative Details. Sie ersetzen nicht die sekundären Grundfarben der Elemente.
+- Walkinly Pink primär für das Logo reservieren. Weitere pinke Elemente nur bewusst hervorheben, beispielsweise den wichtigsten CTA einer Ansicht. Gewöhnliche Buttons bleiben in den Sekundärfarben.
+- Neutrale Farben bleiben für Seitenhintergründe und Lesbarkeit verfügbar. Rundungen und transparente Logo-Darstellung gelten weiterhin.
+- Auf pinken CTAs Mahagoni als Textfarbe verwenden. Auf Babyblau ebenfalls Mahagoni, auf Mahagoni Weiss. Pink dunkel ist nur eine optionale funktionale CTA-Variante, keine Standardfarbe aller Buttons.
 
 ## Typografie
 

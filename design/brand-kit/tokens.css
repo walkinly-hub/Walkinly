@@ -10,6 +10,13 @@
   --walkinly-white: #ffffff;
   --walkinly-ink: #1d1d1f;
   --walkinly-border: #e7e5e4;
+  /* Element defaults, restrained accents, and exceptional primary CTA. */
+  --walkinly-element-bg: var(--walkinly-blue);
+  --walkinly-element-text: var(--walkinly-mahogany);
+  --walkinly-action-bg: var(--walkinly-mahogany);
+  --walkinly-action-text: var(--walkinly-white);
+  --walkinly-cta-bg: var(--walkinly-pink);
+  --walkinly-cta-text: var(--walkinly-mahogany);
   --walkinly-font: Geist, Arial, sans-serif;
   --walkinly-space: 8px;
   --walkinly-radius-card: 24px;
