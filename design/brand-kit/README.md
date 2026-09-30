@@ -50,7 +50,7 @@ Geist ist die bestehende App-Schrift: 600–700 für Überschriften, 400–500 f
 
 Das Logo immer freigestellt auf dem jeweiligen Hintergrund darstellen: kein weisses Rechteck, kein eigener Hintergrund am Bild oder Logo-Container. Nur die transparente PNG für Anwendungen verwenden. Seitenverhältnis erhalten, keine Effekte oder Verzerrung. Ruhige kontrastreiche Flächen wählen, beispielsweise Warmweiss, Blush oder Ice Blue.
 
-Als zusätzlicher Schutzraum mindestens die Höhe des i-Punkts um die sichtbare Wortmarke einplanen. Empfohlene sichtbare Wortmarkenbreite mindestens 160 px; kleinere Darstellungen am tatsächlichen Ausgabegerät prüfen. Für Favicons ist die vollständige Wortmarke zu lang; ein separates Zeichen ist noch nicht freigegeben.
+Als zusätzlicher Schutzraum mindestens die Höhe des i-Punkts um die sichtbare Wortmarke einplanen. Empfohlene sichtbare Wortmarkenbreite mindestens 160 px; kleinere Darstellungen am tatsächlichen Ausgabegerät prüfen. Für Favicons wird nur das W verwendet; die vier Varianten liegen im Ordner `favicons`. Die hier ausdrücklich gewünschten deckenden Hintergründe sind eine Ausnahme zur Freistellung der vollständigen Wortmarke.
 
 Das Original ist 1774 × 887 px. Wegen der weissen Ränder ist die sichtbare Wortmarke kleiner als die Bildfläche. Für grosse Drucksachen wird eine separat geprüfte Vektorreinzeichnung benötigt. Dieses Kit enthält keine vermeintlich fertige SVG-Datei.
 
@@ -69,3 +69,9 @@ Die Übersicht enthält ein Beispiel für eine Salon-Karte, einen Social-Media-B
 ## Vor Produktion
 
 Für Druck Farbproof beim Druckdienstleister prüfen. Für Vektor- und monochrome Logo-Ausgaben sowie ein App-Icon ist eine eigene Reinzeichnung erforderlich. Es sind keine Supabase-Schritte nötig.
+
+## Favicon-Dateien
+
+Vier Varianten: Pink auf Weiss, Pink auf Schwarz, Weiss auf Pink und Schwarz auf Pink. Mit Imagegen anhand des Original-W erzeugt; leichte Form- und Farbabweichungen zwischen den Rastervarianten sind möglich. Prompt-Vorgabe: nur das runde Logo-W zentriert auf quadratischer Fläche, Pink #EC4899, Weiss #FFFFFF und Schwarz #000000; keine weiteren Buchstaben oder Effekte.
+
+Je Variante: Master-PNG, PNGs in 16/32/48/180/192/512 px und ICO mit 16/32/48 px. Die Website wurde nicht automatisch auf eine Variante umgestellt. Die aktuelle Vorschau zeigt alle vier Varianten inklusive kleiner Darstellungen.
