@@ -6,6 +6,7 @@ import type { CSSProperties, FormEvent } from "react";
 
 import SalonBrand from "@/components/customer/SalonBrand";
 import type { SalonBranding } from "@/lib/salon-branding";
+import WalkinlyLogo from "@/components/WalkinlyLogo";
 import { supabase } from "@/lib/supabase";
 
 type DashboardState =
@@ -590,7 +591,7 @@ export default function DashboardPage({
       className="min-h-screen bg-background px-4 py-4 text-foreground sm:px-6 sm:py-6 lg:px-8 lg:py-10"
       style={themeStyle}
     >
-      <section className="mx-auto w-full max-w-7xl rounded-3xl bg-card p-5 shadow-sm sm:p-7 lg:p-10">
+      <section className={`mx-auto w-full max-w-7xl rounded-3xl p-5 shadow-sm sm:p-7 lg:p-10 ${branding ? "bg-card" : "border border-border bg-[var(--walkinly-ice-blue)]"}`}>
         {branding && brandedSalonName ? (
           <SalonBrand
             salonName={brandedSalonName}
@@ -598,7 +599,7 @@ export default function DashboardPage({
             logoInverted={branding.logoInverted}
           />
         ) : (
-          <p className="text-sm font-medium text-primary">Walkinly</p>
+          <WalkinlyLogo className="h-auto w-40" priority />
         )}
 
         {dashboardState.status === "no-access" ? (

@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { supabase } from "@/lib/supabase";
 import PrivacyLink from "@/components/legal/PrivacyLink";
+import WalkinlyLogo from "@/components/WalkinlyLogo";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -41,20 +42,20 @@ export default function AdminLoginPage() {
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-3xl bg-card p-8 shadow-sm"
+        className="w-full max-w-md rounded-3xl border border-border bg-[var(--walkinly-ice-blue)] p-8 shadow-sm"
       >
-        <p className="text-sm font-medium text-primary">Walkinly</p>
+        <WalkinlyLogo className="h-auto w-40" priority />
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
           Salon-Login
         </h1>
 
         {isEmailSent ? (
-          <p className="mt-4 text-zinc-600">
+          <p className="mt-4 text-[var(--muted-foreground)]">
             Wir haben dir einen sicheren Login-Link per E-Mail gesendet.
           </p>
         ) : (
           <>
-            <p className="mt-3 text-zinc-500">
+            <p className="mt-3 text-[var(--muted-foreground)]">
               Gib deine geschäftliche E-Mail-Adresse ein.
             </p>
 
@@ -69,7 +70,7 @@ export default function AdminLoginPage() {
               autoComplete="email"
               required
               disabled={isSubmitting}
-              className="mt-2 w-full rounded-2xl border border-zinc-200 px-4 py-3 outline-none focus:border-primary"
+              className="mt-2 w-full rounded-2xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary"
             />
 
             {errorMessage && (
@@ -78,7 +79,7 @@ export default function AdminLoginPage() {
               </p>
             )}
 
-            <p className="mt-4 text-sm text-zinc-600">
+            <p className="mt-4 text-sm text-[var(--muted-foreground)]">
               Wir verwenden deine E-Mail-Adresse zum Versand des Login-Links und
               zur Verwaltung deines Salonzugangs. <PrivacyLink section="browser" />.
             </p>
@@ -86,7 +87,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-6 w-full rounded-2xl bg-primary py-4 text-lg font-semibold text-white hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 w-full rounded-2xl bg-[var(--walkinly-pink)] py-4 text-lg font-semibold text-[var(--walkinly-mahogany)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Link wird gesendet..." : "Login-Link senden"}
             </button>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import WalkinlyLogo from "@/components/WalkinlyLogo";
 
 export default function Home() {
   useEffect(() => {
@@ -25,10 +26,16 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold">
-        Walkinly verbindet sich mit Supabase...
-      </h1>
+    <main className="flex min-h-screen items-center justify-center bg-background px-6">
+      <section className="w-full max-w-md rounded-3xl border border-border bg-[var(--walkinly-ice-blue)] p-8 shadow-sm">
+        <WalkinlyLogo className="h-auto w-44" priority />
+        <h1 className="mt-8 text-3xl font-semibold tracking-tight text-foreground">
+          Willkommen bei Walkinly
+        </h1>
+        <p className="mt-3 text-[var(--muted-foreground)]">
+          Digitale Warteschlangen für entspanntere Salonbesuche.
+        </p>
+      </section>
     </main>
   );
 }

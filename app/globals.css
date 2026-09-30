@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f7f4;
-  --foreground: #1d1d1f;
+  --walkinly-pink: #ec4899;
+  --walkinly-pink-dark: #db2777;
+  --walkinly-mahogany: #420d09;
+  --walkinly-baby-blue: #89cff0;
+  --walkinly-blush: #fce7f3;
+  --walkinly-ice-blue: #e7f5fc;
 
-  --primary: #ec4899;
-  --primary-hover: #db2777;
+  --background: #f8f7f4;
+  --foreground: var(--walkinly-mahogany);
+  --muted-foreground: #734641;
+
+  --primary: var(--walkinly-mahogany);
+  --primary-hover: #2d0806;
+  --primary-foreground: #ffffff;
 
   --success: #22c55e;
   --warning: #f59e0b;
@@ -26,6 +35,12 @@
 
   --color-border: var(--border);
   --color-card: var(--card);
+
+  --color-walkinly-pink: var(--walkinly-pink);
+  --color-walkinly-mahogany: var(--walkinly-mahogany);
+  --color-walkinly-baby-blue: var(--walkinly-baby-blue);
+  --color-walkinly-blush: var(--walkinly-blush);
+  --color-walkinly-ice-blue: var(--walkinly-ice-blue);
 
   --font-sans: var(--font-geist-sans);
 }
