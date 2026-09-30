@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
-      <section className="w-full max-w-md rounded-3xl border border-border bg-[var(--walkinly-ice-blue)] p-8 shadow-sm">
+      <section className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm">
         <WalkinlyLogo className="h-auto w-44" priority />
         <h1 className="mt-8 text-3xl font-semibold tracking-tight text-foreground">
           Willkommen bei Walkinly

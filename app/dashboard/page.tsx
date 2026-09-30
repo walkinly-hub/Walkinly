@@ -591,7 +591,7 @@ export default function DashboardPage({
       className="min-h-screen bg-background px-4 py-4 text-foreground sm:px-6 sm:py-6 lg:px-8 lg:py-10"
       style={themeStyle}
     >
-      <section className={`mx-auto w-full max-w-7xl rounded-3xl p-5 shadow-sm sm:p-7 lg:p-10 ${branding ? "bg-card" : "border border-border bg-[var(--walkinly-ice-blue)]"}`}>
+      <section className={`mx-auto w-full max-w-7xl rounded-3xl p-5 shadow-sm sm:p-7 lg:p-10 ${branding ? "bg-card" : "border border-border bg-card"}`}>
         {branding && brandedSalonName ? (
           <SalonBrand
             salonName={brandedSalonName}

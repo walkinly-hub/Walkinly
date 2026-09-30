@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
     <main className="min-h-screen bg-background flex items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-3xl border border-border bg-[var(--walkinly-ice-blue)] p-8 shadow-sm"
+        className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
         <WalkinlyLogo className="h-auto w-40" priority />
         <h1 className="mt-3 text-3xl font-semibold text-foreground">
@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-6 w-full rounded-2xl bg-[var(--walkinly-pink)] py-4 text-lg font-semibold text-[var(--walkinly-mahogany)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 w-full rounded-2xl bg-[var(--walkinly-pink)] py-4 text-lg font-semibold text-[var(--walkinly-pink-foreground)] transition hover:bg-[var(--walkinly-pink-dark)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Link wird gesendet..." : "Login-Link senden"}
             </button>
