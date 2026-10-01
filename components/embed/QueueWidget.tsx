@@ -78,13 +78,19 @@ export default function QueueWidget({
       <style>{"html, body { background: transparent !important; }"}</style>
       <main className="min-h-screen bg-transparent p-4" style={themeStyle}>
         <section className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-sm">
-          <SalonBrand
-            salonName={salonName}
-            logoUrl={branding.logoUrl}
-            logoInverted={branding.logoInverted}
-          />
+          <div className="flex items-center gap-3">
+            <SalonBrand
+              salonName={salonName}
+              logoUrl={branding.logoUrl}
+              logoInverted={branding.logoInverted}
+              showName={false}
+            />
+            <h2 className="text-lg font-semibold text-foreground">
+              Aktuelle Warteschlange
+            </h2>
+          </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-5 grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-border bg-background p-4">
               <p className="text-sm text-[var(--muted-foreground)]">Wartende</p>
               <p className="mt-1 text-3xl font-bold text-foreground">{waitingCount}</p>

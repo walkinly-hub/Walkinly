@@ -2,15 +2,17 @@ type SalonBrandProps = {
   salonName: string;
   logoUrl?: string;
   logoInverted: boolean;
+  showName?: boolean;
 };
 
 export default function SalonBrand({
   salonName,
   logoUrl,
   logoInverted,
+  showName = true,
 }: SalonBrandProps) {
   if (!logoUrl) {
-    return <p className="text-sm font-semibold text-primary">{salonName}</p>;
+    return showName ? <p className="text-sm font-semibold text-primary">{salonName}</p> : null;
   }
 
   return (
@@ -25,9 +27,11 @@ export default function SalonBrand({
         className="h-10 w-10 object-contain"
         style={{ filter: logoInverted ? "invert(1) brightness(2)" : undefined }}
       />
-      <span className="font-serif text-2xl font-bold tracking-wide uppercase">
-        {salonName}
-      </span>
+      {showName && (
+        <span className="font-serif text-2xl font-bold tracking-wide uppercase">
+          {salonName}
+        </span>
+      )}
     </div>
   );
 }
