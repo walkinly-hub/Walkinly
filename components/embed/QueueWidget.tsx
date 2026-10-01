@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { SalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
+import SalonBrand from "@/components/customer/SalonBrand";
 
 type QueueWidgetProps = {
   salonName: string;
@@ -77,12 +78,22 @@ export default function QueueWidget({
       <style>{"html, body { background: transparent !important; scrollbar-width: none; } html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }"}</style>
       <main className="min-h-screen bg-transparent p-4" style={themeStyle}>
         <section aria-label={`Warteschlange ${salonName}`} className="mx-auto w-full max-w-md rounded-[3rem_3rem_2rem_2rem] border border-border bg-card p-5 shadow-sm sm:p-6">
-          <h2
-            className="text-[clamp(1.5rem,7vw,2.5rem)] font-normal uppercase leading-[0.95] tracking-[-0.02em] text-foreground"
-            style={{ fontFamily: "var(--font-widget-display), sans-serif" }}
-          >
-            Aktuelle<br />Warteschlange.
-          </h2>
+          <header className="flex items-center justify-between gap-3">
+            <h2
+              className="text-[clamp(1.5rem,6vw,2.5rem)] font-normal uppercase leading-[0.95] tracking-[-0.02em] text-foreground"
+              style={{ fontFamily: "var(--font-widget-display), sans-serif" }}
+            >
+              Aktuelle<br />Warteschlange
+            </h2>
+            <div className="shrink-0">
+              <SalonBrand
+                salonName={salonName}
+                logoUrl={branding.logoUrl}
+                logoInverted={branding.logoInverted}
+                showName={false}
+              />
+            </div>
+          </header>
 
           <div className="mt-5 grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-border bg-background p-4">
