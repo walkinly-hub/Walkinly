@@ -1,7 +1,16 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import PrivacyLink from "./PrivacyLink";
 import WalkinlyLogo from "@/components/WalkinlyLogo";
 
 export default function LegalFooter() {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/embed/")) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-border bg-background px-4 py-4 text-center text-xs text-foreground">
       <nav aria-label="Rechtliche Informationen" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">

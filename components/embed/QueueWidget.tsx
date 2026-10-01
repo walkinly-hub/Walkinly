@@ -97,6 +97,18 @@ export default function QueueWidget({
             </div>
           </div>
 
+          <p className="mt-5 text-center text-xs text-[var(--muted-foreground)]">
+            Bereitgestellt durch{" "}
+            <a
+              href="https://www.walkinly.ch"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-foreground underline underline-offset-4"
+            >
+              Walkinly
+            </a>
+          </p>
+
         </section>
       </main>
     </>
