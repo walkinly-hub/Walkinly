@@ -1,6 +1,6 @@
 # Walkinly Brand-Kit
 
-Version 4 · 29. September 2026
+Version 5 · 1. Oktober 2026
 
 ## Grundlage
 
@@ -21,10 +21,11 @@ Freundlich, unkompliziert, nahbar und klar. Die runden Buchstaben vermitteln Off
 | Sekundär 2 | Babyblau | #89CFF0 | Standard für Karten, Flächen und weitere Website-Elemente |
 | Akzent 1 | Blush | #FCE7F3 | Gezielte sanfte rosa Akzente |
 | Akzent 2 | Ice Blue | #E7F5FC | Gezielte sanfte blaue Akzente |
+| Akzent 3 | Warmweiss | #F8F7F4 | Ruhige Hintergrund- und Akzentflächen, auch in Website und Dashboard |
 
 Mahagoni entspricht dem HEX-Wert der Vorlage, Babyblau wurde direkt aus der blauen Bildfläche ausgelesen. Ice Blue ist eine Aufhellung von Babyblau mit rund 80 % Weiss: ähnlich zart wie Blush, bei erhaltener blauer Farbrichtung.
 
-Neutrale Funktionsfarben: Warmweiss #F8F7F4, Weiss #FFFFFF, Ink #1D1D1F und Stone #E7E5E4. Pink dunkel #DB2777 bleibt ausschliesslich eine funktionale Buttonfarbe und zählt nicht als zusätzliche Markenfarbe.
+Neutrale Funktionsfarben: Weiss #FFFFFF, Ink #1D1D1F und Stone #E7E5E4. Pink dunkel #DB2777 bleibt ausschliesslich eine funktionale Buttonfarbe und zählt nicht als zusätzliche Markenfarbe.
 Die HEX-Werte sind verbindliche Gestaltungswerte, keine Behauptung, dass jeder Pixel des generierten Logos exakt diesen Farbwert besitzt. Das Original enthält leichte Farbvariation.
 
 Für kleinen Text Mahagoni auf hellen Flächen verwenden. Pinke CTAs erhalten dunkle Mahagoni-Schrift; weisse Schrift ist der dunkleren Pink-Variante vorbehalten. Statusinformationen immer zusätzlich mit Text oder Symbol erklären.
@@ -33,6 +34,7 @@ Für kleinen Text Mahagoni auf hellen Flächen verwenden. Pinke CTAs erhalten du
 
 - Mahagoni und Babyblau bilden grundsätzlich die Website-Elemente: Navigation, Karten, Buttons, Icons, Konturen und strukturierende Flächen. Mahagoni ist die dunkle, Babyblau die helle Variante.
 - Blush und Ice Blue ausschliesslich gezielt als Akzente einsetzen, etwa für kleine Hinweisflächen, Labels und dekorative Details. Sie ersetzen nicht die sekundären Grundfarben der Elemente.
+- Warmweiss #F8F7F4 ist die dritte Akzentfarbe und darf zusätzlich grossflächig als ruhiger Seitenhintergrund eingesetzt werden. Der Ton entspricht dem bestehenden Website- und App-Hintergrund. Im CSS ist `--walkinly-background` ein Alias von `--walkinly-warm-white`.
 - Walkinly Pink primär für das Logo reservieren. Weitere pinke Elemente nur bewusst hervorheben, beispielsweise den wichtigsten CTA einer Ansicht. Gewöhnliche Buttons bleiben in den Sekundärfarben.
 - Neutrale Farben bleiben für Seitenhintergründe und Lesbarkeit verfügbar. Rundungen und transparente Logo-Darstellung gelten weiterhin.
 - Auf pinken CTAs Mahagoni als Textfarbe verwenden. Auf Babyblau ebenfalls Mahagoni, auf Mahagoni Weiss. Pink dunkel ist nur eine optionale funktionale CTA-Variante, keine Standardfarbe aller Buttons.
