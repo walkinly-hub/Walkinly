@@ -573,18 +573,23 @@ export default function DashboardPage({
     return null;
   }
 
-  const themeStyle = branding
-    ? ({
-        "--background": branding.backgroundColor,
-        "--foreground": branding.foregroundColor,
-        "--card": branding.surfaceColor,
-        "--primary": branding.primaryColor,
-        "--primary-hover": branding.primaryHoverColor,
-        "--primary-foreground": branding.primaryForegroundColor,
-        "--border": branding.borderColor,
-        "--muted-foreground": branding.mutedForegroundColor,
-      } as CSSProperties & Record<`--${string}`, string>)
-    : undefined;
+  const themeStyle = ({
+    "--dashboard-tint": branding
+      ? branding.backgroundColor
+      : "var(--walkinly-ice-blue)",
+    ...(branding
+      ? {
+          "--background": branding.backgroundColor,
+          "--foreground": branding.foregroundColor,
+          "--card": branding.surfaceColor,
+          "--primary": branding.primaryColor,
+          "--primary-hover": branding.primaryHoverColor,
+          "--primary-foreground": branding.primaryForegroundColor,
+          "--border": branding.borderColor,
+          "--muted-foreground": branding.mutedForegroundColor,
+        }
+      : {}),
+  } as CSSProperties & Record<`--${string}`, string>);
 
   return (
     <main
@@ -647,7 +652,7 @@ export default function DashboardPage({
                     Warteschlangen-Management
                   </h2>
                 </div>
-                <span className="rounded-full bg-[var(--background)] px-4 py-2 text-sm font-semibold">
+                <span className="rounded-full bg-[var(--dashboard-tint)] px-4 py-2 text-sm font-semibold">
                   {queueEntries.length} wartend
                 </span>
               </div>
@@ -669,7 +674,7 @@ export default function DashboardPage({
 
                   <form
                     onSubmit={(event) => void handleAddQueueEntry(event)}
-                    className="mt-4 flex flex-col gap-2 rounded-2xl bg-[var(--background)] p-3 sm:flex-row"
+                    className="mt-4 flex flex-col gap-2 rounded-2xl bg-[var(--dashboard-tint)] p-3 sm:flex-row"
                   >
                     <label className="sr-only" htmlFor="dashboard-customer-name">
                       Name der wartenden Person
@@ -697,7 +702,7 @@ export default function DashboardPage({
                       Warteschlange wird geladen...
                     </p>
                   ) : queueEntries.length === 0 ? (
-                    <div className="mt-4 rounded-2xl bg-[var(--background)] p-6 text-center sm:p-8">
+                    <div className="mt-4 rounded-2xl bg-[var(--dashboard-tint)] p-6 text-center sm:p-8">
                       <p className="font-semibold">Momentan wartet niemand.</p>
                       <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                         Neue Check-ins erscheinen automatisch hier.
@@ -708,7 +713,7 @@ export default function DashboardPage({
                       {queueEntries.map((entry) => (
                         <li
                           key={entry.entry_id}
-                          className="flex min-w-0 flex-col gap-3 rounded-2xl bg-[var(--background)] p-4 sm:flex-row sm:items-center sm:justify-between"
+                          className="flex min-w-0 flex-col gap-3 rounded-2xl bg-[var(--dashboard-tint)] p-4 sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="min-w-0">
                             <p className="truncate font-semibold">
@@ -769,7 +774,7 @@ export default function DashboardPage({
                     className={`rounded-2xl p-5 transition-colors ${
                       dashboardState.isChairOccupied
                         ? "bg-primary text-[var(--primary-foreground)]"
-                        : "border border-[var(--border)] bg-[var(--background)] text-foreground"
+                        : "border border-[var(--border)] bg-[var(--dashboard-tint)] text-foreground"
                     }`}
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] opacity-75">
@@ -836,7 +841,7 @@ export default function DashboardPage({
                 </div>
                 <fieldset>
                   <legend className="sr-only">Statistikzeitraum</legend>
-                  <div className="flex rounded-xl bg-[var(--background)] p-1">
+                  <div className="flex rounded-xl bg-[var(--dashboard-tint)] p-1">
                     {([7, 30, 90] as const).map((days) => (
                       <button
                         key={days}
@@ -861,7 +866,7 @@ export default function DashboardPage({
                   Statistiken werden geladen...
                 </p>
               ) : statisticsError ? (
-                <p className="mt-4 rounded-xl bg-[var(--background)] p-4 text-sm text-[var(--muted-foreground)]">
+                <p className="mt-4 rounded-xl bg-[var(--dashboard-tint)] p-4 text-sm text-[var(--muted-foreground)]">
                   {statisticsError}
                 </p>
               ) : statistics ? (
@@ -873,7 +878,7 @@ export default function DashboardPage({
                       ["Entfernt", statistics.removed],
                       ["Bewertungen", statistics.feedback_count],
                     ].map(([label, value]) => (
-                      <div key={label} className="rounded-2xl bg-[var(--background)] p-4">
+                      <div key={label} className="rounded-2xl bg-[var(--dashboard-tint)] p-4">
                         <p className="text-2xl font-semibold">{value}</p>
                         <p className="mt-1 text-xs text-[var(--muted-foreground)]">{label}</p>
                       </div>
@@ -881,7 +886,7 @@ export default function DashboardPage({
                   </div>
 
                   <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
-                  <div className="rounded-2xl bg-[var(--background)] p-5">
+                  <div className="rounded-2xl bg-[var(--dashboard-tint)] p-5">
                     <div className="flex items-end justify-between gap-3">
                       <div>
                         <h3 className="font-semibold">Digitale Check-ins</h3>
@@ -913,7 +918,7 @@ export default function DashboardPage({
                     </div>
                   </div>
 
-                  <div className="rounded-2xl bg-[var(--background)] p-5">
+                  <div className="rounded-2xl bg-[var(--dashboard-tint)] p-5">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="font-semibold">Feedback</h3>
                       <p className="text-xl font-semibold">
@@ -986,7 +991,7 @@ export default function DashboardPage({
                   <textarea
                     readOnly
                     value={`<iframe src="https://www.walkinly.ch/embed/${dashboardState.salonSlug}" title="Walkinly Warteschlange" width="100%" height="300" style="border: 0; max-width: 480px;" loading="lazy"></iframe>`}
-                    className="mt-4 h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 font-mono text-xs text-[var(--muted-foreground)]"
+                    className="mt-4 h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--dashboard-tint)] p-3 font-mono text-xs text-[var(--muted-foreground)]"
                   />
                   <button
                     type="button"
