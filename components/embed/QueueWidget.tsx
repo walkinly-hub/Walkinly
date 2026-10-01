@@ -77,15 +77,15 @@ export default function QueueWidget({
     <>
       <style>{"html, body { background: transparent !important; scrollbar-width: none; } html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }"}</style>
       <main className="min-h-screen bg-transparent p-4" style={themeStyle}>
-        <section aria-label={`Warteschlange ${salonName}`} className="mx-auto w-full max-w-md rounded-[3rem_3rem_2rem_2rem] border border-border bg-card p-5 shadow-sm sm:p-6">
-          <header className="flex items-center justify-between gap-3">
+        <section aria-label={`Warteschlange ${salonName}`} className="mx-auto w-full max-w-md rounded-[3rem_3rem_2rem_2rem] border border-border bg-card p-5 shadow-sm [container-type:inline-size] sm:p-6">
+          <header className="flex items-center justify-between gap-3 text-[clamp(1rem,9cqw,2.5rem)]">
             <h2
-              className="text-[clamp(1.5rem,6vw,2.5rem)] font-normal uppercase leading-[0.95] tracking-[-0.02em] text-foreground"
+              className="font-normal uppercase leading-[0.95] tracking-[-0.02em] text-foreground"
               style={{ fontFamily: "var(--font-widget-display), sans-serif" }}
             >
               Aktuelle<br />Warteschlange
             </h2>
-            <div className="shrink-0">
+            <div className="shrink-0 [&_img]:h-[1.9em] [&_img]:w-[1.9em]">
               <SalonBrand
                 salonName={salonName}
                 logoUrl={branding.logoUrl}
