@@ -2,6 +2,13 @@ import QueueWidget from "@/components/embed/QueueWidget";
 import { parseSalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { Anton } from "next/font/google";
+
+const widgetDisplay = Anton({
+  variable: "--font-widget-display",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 type QueueSummary = {
   salon_name: string;
@@ -38,12 +45,14 @@ export default async function EmbedPage({ params }: EmbedPageProps) {
   }
 
   return (
-    <QueueWidget
-      salonName={queueResult.data.salon_name}
-      salonSlug={location}
-      branding={parseSalonBranding(salonResult.data.branding)}
-      initialWaitingCount={queueResult.data.waiting_count}
-      initialEstimatedWaitMinutes={queueResult.data.estimated_wait_minutes}
-    />
+    <div className={widgetDisplay.variable}>
+      <QueueWidget
+        salonName={queueResult.data.salon_name}
+        salonSlug={location}
+        branding={parseSalonBranding(salonResult.data.branding)}
+        initialWaitingCount={queueResult.data.waiting_count}
+        initialEstimatedWaitMinutes={queueResult.data.estimated_wait_minutes}
+      />
+    </div>
   );
 }

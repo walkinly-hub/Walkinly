@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { SalonBranding } from "@/lib/salon-branding";
 import { supabase } from "@/lib/supabase";
-import SalonBrand from "@/components/customer/SalonBrand";
 
 type QueueWidgetProps = {
   salonName: string;
@@ -27,7 +26,6 @@ export default function QueueWidget({
   initialWaitingCount,
   initialEstimatedWaitMinutes,
 }: QueueWidgetProps) {
-  const titleArcId = `queue-title-arc-${salonSlug}`;
   const [waitingCount, setWaitingCount] = useState(initialWaitingCount);
   const [estimatedWaitMinutes, setEstimatedWaitMinutes] = useState(
     initialEstimatedWaitMinutes,
@@ -76,33 +74,15 @@ export default function QueueWidget({
 
   return (
     <>
-      <style>{"html, body { background: transparent !important; }"}</style>
+      <style>{"html, body { background: transparent !important; scrollbar-width: none; } html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }"}</style>
       <main className="min-h-screen bg-transparent p-4" style={themeStyle}>
-        <section className="mx-auto w-full max-w-md rounded-[3rem_3rem_2rem_2rem] border border-border bg-card p-5 shadow-sm sm:p-6">
-          <header className="relative mx-auto h-24 w-56" aria-hidden="true">
-            <svg viewBox="0 0 224 76" className="absolute inset-x-0 top-0 h-20 w-56 overflow-visible">
-              <defs>
-                <path id={titleArcId} d="M 16 62 Q 112 24 208 62" fill="none" />
-              </defs>
-              <text
-                className="fill-current text-[11px] font-semibold uppercase tracking-[0.14em]"
-                style={{ color: "var(--muted-foreground)" }}
-              >
-                <textPath href={`#${titleArcId}`} startOffset="50%" textAnchor="middle">
-                  Aktuelle Warteschlange
-                </textPath>
-              </text>
-            </svg>
-            <div className="absolute inset-x-0 bottom-0 flex justify-center">
-              <SalonBrand
-                salonName={salonName}
-                logoUrl={branding.logoUrl}
-                logoInverted={branding.logoInverted}
-                showName={false}
-              />
-            </div>
-          </header>
-          <h2 className="sr-only">Aktuelle Warteschlange</h2>
+        <section aria-label={`Warteschlange ${salonName}`} className="mx-auto w-full max-w-md rounded-[3rem_3rem_2rem_2rem] border border-border bg-card p-5 shadow-sm sm:p-6">
+          <h2
+            className="text-[clamp(1.5rem,7vw,2.5rem)] font-normal uppercase leading-[0.95] tracking-[-0.02em] text-foreground"
+            style={{ fontFamily: "var(--font-widget-display), sans-serif" }}
+          >
+            Aktuelle<br />Warteschlange.
+          </h2>
 
           <div className="mt-5 grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-border bg-background p-4">
